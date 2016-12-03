@@ -11,6 +11,7 @@ sass.old
 source.old
 source/_stash
 source/screen.css
+cv/jsonresume-theme-*
 vendor
 node_modules
 Gemfile.lock
