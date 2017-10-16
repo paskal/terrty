@@ -1,11 +1,8 @@
 [Unit]
-Description=DNSmasq
-Before=systemd-resolved
+Description=dnsmasq
 
 [Install]
 WantedBy=multi-user.target
 
 [Service]
-Exec=docker run -p 53:53/tcp -p 53:53/udp -d --cap-add=NET_ADMIN andyshinn/dnsmasq:latest
-Type=oneshot
-RemainAfterExit=yes
+ExecStart=/usr/bin/docker run -p 53:53/tcp -p 53:53/udp -d --cap-add=NET_ADMIN andyshinn/dnsmasq:latest
