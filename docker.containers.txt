@@ -1,3 +1,19 @@
-docker run -d --restart=always -p 53:53/tcp -p 53:53/udp --cap-add=NET_ADMIN andyshinn/dnsmasq:latest
-docker run -d --restart=always --cap-add NET_ADMIN -p 500:500/udp -p 4500:4500/udp -p 1701:1701/tcp -p 1194:1194/udp -p 5555:5555/tcp -p 992:992/tcp -e USERS='***':'***' -e PSK=*** siomiz/softethervpn
-docker run -d --restart=always -p 80:80/tcp -p 443:443/tcp paskal/terrty-nginx
+# dns
+docker run -d --restart=always -p 53:53/tcp \
+  -p 53:53/udp \
+  --cap-add=NET_ADMIN \
+  andyshinn/dnsmasq:latest
+# vpn
+docker run -d --restart=always \
+  --cap-add NET_ADMIN \
+  -p 500:500/udp -p 4500:4500/udp \
+  -p 1701:1701/tcp -p 1194:1194/udp \
+  -p 5555:5555/tcp -p 992:992/tcp \
+  -e USERS='***':'***' \
+  -e PSK=*** \
+  siomiz/softethervpn
+# nginx
+docker run -d --restart=always \
+  -p 80:80 -p 443:443 \
+  --name nginx \
+  paskal/terrty-nginx
