@@ -16,4 +16,12 @@ docker run -d --restart=always \
 docker run -d --restart=always \
   -p 80:80 -p 443:443 \
   --name nginx \
-  paskal/terrty-nginx
+  --mount type=bind,source=/root/octopress/public,target=/usr/share/nginx/html,readonly \
+  --mount type=bind,source=/root/octopress/nginx,target=/etc/nginx/conf.d,readonly \
+  --mount type=bind,source=/etc/letsencrypt,target=/etc/letsencrypt,readonly \
+  nginx:alpine
+# renew certificate
+docker run --rm -d \
+  --mount type=bind,source=/etc/letsencrypt:target=/etc/letsencrypt \
+  certbot/certbot \
+  certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
