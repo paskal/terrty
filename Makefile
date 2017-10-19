@@ -25,3 +25,13 @@ certbot:
     --mount type=bind,source=/etc/letsencrypt:target=/etc/letsencrypt \
     certbot/certbot \
     certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
+
+build-blog:
+	docker run -it --rm --name build-blog \
+    --mount type=bind,source=$(PWD)/source/,target=/data/source/ \
+    --mount type=bind,source=$(PWD)/public/,target=/data/public/ \
+    paskal/octopress \
+		generate
+
+build-image:
+	docker build -t paskal/octopress .
