@@ -30,7 +30,7 @@ build-blog:
 	docker run -it --rm \
 		--mount type=bind,source=$(PWD)/source/,target=/data/source/ \
 		--mount type=bind,source=$(PWD)/public/,target=/data/public/ \
-		paskal/octopress
+		paskal/octopress \
 		generate
 
 build-image:
