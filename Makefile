@@ -26,6 +26,16 @@ certbot-container:
 		certbot/certbot \
 		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
 
+build-resume:
+	docker run -it --rm --name build-resume \
+		--mount type=bind,source=$(PWD)/cv,target=/data/ \
+		paskal/jsonresume \
+		export --theme kendall verhoturov.html
+	mkdir -p public/cv/
+	rm -f public/cv/* || true
+	mv cv/verhoturov.html public/cv/
+	xvfb-run wkhtmltopdf public/cv/verhoturov.html public/cv/verhoturov.pdf
+
 build-blog:
 	docker run -it --rm \
 		--mount type=bind,source=$(PWD)/source/,target=/data/source/ \
@@ -33,5 +43,8 @@ build-blog:
 		paskal/octopress \
 		generate
 
-build-image:
+build-image-resumejson:
+	docker build -t paskal/jsonresume cv
+
+build-image-blog:
 	docker build -t paskal/octopress .
