@@ -15,7 +15,6 @@ vpn-container:
 nginx-container:
 	docker run -d --restart=always \
 		-p 80\:80 -p 443\:443 \
-		--name nginx \
 		--mount type=bind,source=/root/terrty/blog/public,target=/usr/share/nginx/html,readonly \
 		--mount type=bind,source=/root/terrty/nginx,target=/etc/nginx/conf.d,readonly \
 		--mount type=bind,source=/etc/letsencrypt,target=/etc/letsencrypt,readonly \
@@ -47,4 +46,4 @@ build-image-resumejson:
 	docker build -t paskal/jsonresume cv
 
 build-image-blog:
-	docker build -t paskal/octopress .
+	docker build -t paskal/octopress blog
