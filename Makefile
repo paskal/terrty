@@ -16,8 +16,8 @@ nginx-container:
 	docker run -d --restart=always \
 		-p 80\:80 -p 443\:443 \
 		--name nginx \
-		--mount type=bind,source=/root/octopress/public,target=/usr/share/nginx/html,readonly \
-		--mount type=bind,source=/root/octopress/nginx,target=/etc/nginx/conf.d,readonly \
+		--mount type=bind,source=/root/terrty/blog/public,target=/usr/share/nginx/html,readonly \
+		--mount type=bind,source=/root/terrty/nginx,target=/etc/nginx/conf.d,readonly \
 		--mount type=bind,source=/etc/letsencrypt,target=/etc/letsencrypt,readonly \
 		nginx\:alpine
 certbot-container:
@@ -31,15 +31,15 @@ build-resume:
 		--mount type=bind,source=$(PWD)/cv,target=/data/ \
 		paskal/jsonresume \
 		export --theme kendall verhoturov.html
-	mkdir -p public/cv/
-	rm -f public/cv/* || true
-	mv cv/verhoturov.html public/cv/
-	xvfb-run wkhtmltopdf public/cv/verhoturov.html public/cv/verhoturov.pdf
+	mkdir -p blog/public/cv/
+	rm -f blog/public/cv/* || true
+	mv cv/verhoturov.html blog/public/cv/
+	xvfb-run wkhtmltopdf blog/public/cv/verhoturov.html blog/public/cv/verhoturov.pdf
 
 build-blog:
 	docker run -it --rm \
-		--mount type=bind,source=$(PWD)/source/,target=/data/source/ \
-		--mount type=bind,source=$(PWD)/public/,target=/data/public/ \
+		--mount type=bind,source=$(PWD)/blog/source/,target=/data/source/ \
+		--mount type=bind,source=$(PWD)/blog/public/,target=/data/public/ \
 		paskal/octopress \
 		generate
 
