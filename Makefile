@@ -29,12 +29,13 @@ certbot-container:
 		certbot/certbot \
 		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
 
-pointim_bot:
+pointim_bot-container:
 	. ../credentials.conf && \
-	docker run -d --restart=always\
-		--mount type=bind,source=/root/cache.bin,target=/usr/src/pointim_bot-master/cache.bin \
-		paskal/pointim_bot \
-		"$${POINT_BOT_LOGIN}:$${POINT_BOT_PASSWORD}" >> ../pointbot.log 2>&1
+	docker run -d --restart=always \
+		--mount type=bind,source=/root/cache.bin,target=/usr/src/pointim_bot-master/target/cache.bin \
+		-e LOGIN="$${POINT_BOT_LOGIN}" \
+		-e PASSWORD="$${POINT_BOT_PASSWORD}" \
+		paskal/pointim_bot
 
 build-resume:
 	docker run -it --rm --name build-resume \

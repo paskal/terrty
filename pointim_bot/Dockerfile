@@ -12,4 +12,4 @@ RUN apk --no-cache --update add ca-certificates wget && \
 	mvn package
 WORKDIR /usr/src/pointim_bot-master/target
 
-ENTRYPOINT ["java", "-Xms64M", "-Xmx64M", "-XX:MaxPermSize=16M", "-jar", "pointim_bot-1.0-SNAPSHOT.jar"]
+ENTRYPOINT java -Xms64M -Xmx64M -XX:MaxPermSize=16M -jar pointim_bot-1.0-SNAPSHOT.jar ${LOGIN}:${PASSWORD}
