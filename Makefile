@@ -5,14 +5,14 @@ dns-container:
 		andyshinn/dnsmasq\:latest
 
 vpn-container:
-    . ../credentials.conf && \
+	. ../credentials.conf && \
 	docker run -d --restart=always \
 		--cap-add NET_ADMIN \
 		-p 500\:500/udp -p 4500\:4500/udp \
 		-p 1701\:1701/tcp -p 1194\:1194/udp \
 		-p 5555\:5555/tcp -p 992\:992/tcp \
-		-e USERS="${VPN_LOGIN}"\:"${VPN_PASSWORD}" \
-		-e PSK="${VPN_SHARED_KEY}"\ \
+		-e USERS="$${VPN_LOGIN}"\:"$${VPN_PASSWORD}" \
+		-e PSK=$${VPN_SHARED_KEY} \
 		siomiz/softethervpn
 
 nginx-container:
@@ -30,11 +30,11 @@ certbot-container:
 		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
 
 pointim_bot:
-    . ../credentials.conf && \
+	. ../credentials.conf && \
 	docker run -d --restart=always\
 		--mount type=bind,source=/root/cache.bin,target=/usr/src/pointim_bot-master/cache.bin \
 		paskal/pointim_bot \
-		"${POINT_BOT_LOGIN}:${POINT_BOT_PASSWORD} >> ../pointbot.log" 2>&1
+		"$${POINT_BOT_LOGIN}:$${POINT_BOT_PASSWORD}" >> ../pointbot.log 2>&1
 
 build-resume:
 	docker run -it --rm --name build-resume \
