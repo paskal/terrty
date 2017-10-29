@@ -20,12 +20,12 @@ nginx-container:
 		-p 80\:80 -p 443\:443 \
 		--mount type=bind,source=/root/terrty/blog/public,target=/usr/share/nginx/html,readonly \
 		--mount type=bind,source=/root/terrty/nginx,target=/etc/nginx/conf.d,readonly \
-		--mount type=bind,source=/etc/letsencrypt,target=/etc/letsencrypt,readonly \
+		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt,readonly \
 		nginx\:alpine
 
 certbot-container:
 	docker run --rm \
-		--mount type=bind,source=/etc/letsencrypt,target=/etc/letsencrypt \
+		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt \
 		certbot/certbot \
 		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
 
