@@ -1,9 +1,11 @@
+# DNS relay to make VPN work without any additional settings
 dns-container:
 	docker run -d --restart=always -p 53\:53/tcp \
 		-p 53\:53/udp \
 		--cap-add=NET_ADMIN \
 		andyshinn/dnsmasq\:latest
 
+# VPN server
 vpn-container:
 	. ../credentials.conf && \
 	docker run -d --restart=always \
@@ -15,20 +17,23 @@ vpn-container:
 		-e PSK=$${VPN_SHARED_KEY} \
 		siomiz/softethervpn
 
+# terrty.net serving
 nginx-container:
 	docker run -d --restart=always \
 		-p 80\:80 -p 443\:443 \
-		--mount type=bind,source=/root/terrty/blog/public,target=/usr/share/nginx/html,readonly \
-		--mount type=bind,source=/root/terrty/nginx,target=/etc/nginx/conf.d,readonly \
+		--mount type=bind,source=$(PWD)/blog/public,target=/usr/share/nginx/html,readonly \
+		--mount type=bind,source=$(PWD)/nginx,target=/etc/nginx/conf.d,readonly \
 		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt,readonly \
 		nginx\:alpine
 
+# HTTPS certificate renewal
 certbot-container:
 	docker run --rm \
 		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt \
 		certbot/certbot \
 		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
 
+# point.im telegram bot hosting
 pointim_bot-container:
 	. ../credentials.conf && \
 	docker run -d --restart=always \
@@ -37,6 +42,7 @@ pointim_bot-container:
 		-e PASSWORD="$${POINT_BOT_PASSWORD}" \
 		paskal/pointim_bot
 
+# resume.json generation, html and pdf
 build-resume:
 	docker run -it --rm --name build-resume \
 		--mount type=bind,source=$(PWD)/cv,target=/data/ \
@@ -45,11 +51,12 @@ build-resume:
 	mkdir -p blog/public/cv/
 	mv cv/verhoturov.html blog/public/cv/
 	docker run --rm --name build-pdf \
-		--mount type=bind,source=/root/terrty/blog/public/cv,target=/tmp/html-to-pdf \
+		--mount type=bind,source=$(PWD)/blog/public/cv,target=/tmp/html-to-pdf \
 		--privileged pink33n/html-to-pdf \
 		--url https://terrty.net/cv/verhoturov.html \
 		--pdf verhoturov.pdf
 
+# blog generation, based on my customized source code
 build-blog:
 	docker run -it --rm \
 		--mount type=bind,source=$(PWD)/blog/source/,target=/data/source/ \
@@ -57,11 +64,14 @@ build-blog:
 		paskal/octopress \
 		generate
 
+# build image with latest jsonresume-theme-kendall version
 build-image-resumejson:
 	docker build -t paskal/jsonresume cv
 
+# build image with customized octopress theme
 build-image-blog:
 	docker build -t paskal/octopress blog
 
+# build image for https://github.com/deemess/pointim_bot
 build-image-pointim_bot:
 	docker build -t paskal/pointim_bot pointim_bot
