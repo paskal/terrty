@@ -43,9 +43,12 @@ build-resume:
 		paskal/jsonresume \
 		export --theme kendall verhoturov.html
 	mkdir -p blog/public/cv/
-	rm -f blog/public/cv/* || true
 	mv cv/verhoturov.html blog/public/cv/
-	xvfb-run wkhtmltopdf blog/public/cv/verhoturov.html blog/public/cv/verhoturov.pdf
+	docker run --rm --name build-pdf \
+		--mount type=bind,source=/root/terrty/blog/public/cv,target=/tmp/html-to-pdf \
+		--privileged pink33n/html-to-pdf \
+		--url https://terrty.net/cv/verhoturov.html \
+		--pdf verhoturov.pdf
 
 build-blog:
 	docker run -it --rm \
