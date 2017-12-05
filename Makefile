@@ -37,7 +37,7 @@ certbot-container:
 pointim_bot-container:
 	. ../credentials.conf && \
 	docker run -d --restart=always \
-		--mount type=bind,source=/root/cache.bin,target=/usr/src/pointim_bot-master/target/cache.bin \
+		--mount type=bind,source=/root/cache.bin,target=/usr/pointim_bot/cache.bin \
 		-e LOGIN="$${POINT_BOT_LOGIN}" \
 		-e PASSWORD="$${POINT_BOT_PASSWORD}" \
 		paskal/pointim_bot
@@ -50,6 +50,9 @@ build-resume:
 		export --theme kendall verhoturov.html
 	mkdir -p blog/public/cv/
 	mv cv/verhoturov.html blog/public/cv/
+	# https://github.com/LinuxBozo/jsonresume-theme-kendall/issues/15 fix
+	sed -i 's/.job-details,/.job-details {/g' ./blog/public/cv/verhoturov.html
+	sed -i 's/.job {//g' ./blog/public/cv/verhoturov.html
 	docker run --rm --name build-pdf \
 		--mount type=bind,source=$(PWD)/blog/public/cv,target=/tmp/html-to-pdf \
 		--privileged pink33n/html-to-pdf \
