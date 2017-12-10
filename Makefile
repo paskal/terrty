@@ -50,9 +50,6 @@ build-resume:
 		export --theme kendall verhoturov.html
 	mkdir -p blog/public/cv/
 	mv cv/verhoturov.html blog/public/cv/
-	# https://github.com/LinuxBozo/jsonresume-theme-kendall/issues/15 fix
-	sed -i 's/.job-details,/.job-details {/g' ./blog/public/cv/verhoturov.html
-	sed -i 's/.job {//g' ./blog/public/cv/verhoturov.html
 	docker run --rm --name build-pdf \
 		--mount type=bind,source=$(PWD)/blog/public/cv,target=/tmp/html-to-pdf \
 		--privileged pink33n/html-to-pdf \
