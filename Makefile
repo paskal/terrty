@@ -30,8 +30,10 @@ nginx-container:
 certbot-container:
 	docker run --rm \
 		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt \
+		--mount type=bind,source=$(PWD)/blog/public,target=/usr/share/nginx/html \
 		certbot/certbot \
-		certonly -d terrty.net --standalone -m paskal.07@gmail.com --agree-tos
+		certonly -t -n --agree-tos --renew-by-default \
+		--webroot -w /usr/share/nginx/html -m paskal.07@gmail.com -d terrty.net
 
 # point.im telegram bot hosting
 pointim_bot-container:
