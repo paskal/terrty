@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+    nginx:
+        build: .
+        image: umputun/nginx-le:latest
+        hostname: nginx
+        restart: always
+        container_name: nginx
+
+        logging:
+          driver: json-file
+          options:
+              max-size: "10m"
+              max-file: "5"
+
+        volumes:
+		    - ./blog/public:/usr/share/nginx/html
+		    - ./nginx:/etc/nginx/conf.d:ro
+            - ../letsencrypt:/etc/letsencrypt
+            - ../ssl:/etc/nginx/ssl
+
+        ports:
+            - "80:80"
+            - "443:443"
+
+        environment:
+            - TZ=UTC
+            - LETSENCRYPT=true
+            - LE_EMAIL=paskal.07@gmail.com
+            - LE_FQDN=terrty.net
