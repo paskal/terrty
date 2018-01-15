@@ -17,24 +17,6 @@ vpn-container:
 		-e PSK=$${VPN_SHARED_KEY} \
 		siomiz/softethervpn
 
-# terrty.net serving
-nginx-container:
-	docker run -d --restart=always \
-		-p 80\:80 -p 443\:443 \
-		--mount type=bind,source=$(PWD)/blog/public,target=/usr/share/nginx/html,readonly \
-		--mount type=bind,source=$(PWD)/nginx,target=/etc/nginx/conf.d,readonly \
-		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt,readonly \
-		nginx\:alpine
-
-# HTTPS certificate renewal
-certbot-container:
-	docker run --rm \
-		--mount type=bind,source=/root/letsencrypt,target=/etc/letsencrypt \
-		--mount type=bind,source=$(PWD)/blog/public,target=/usr/share/nginx/html \
-		certbot/certbot \
-		certonly -t -n --agree-tos --renew-by-default \
-		--webroot -w /usr/share/nginx/html -m paskal.07@gmail.com -d terrty.net
-
 # point.im telegram bot hosting
 pointim_bot-container:
 	. ../credentials.conf && \

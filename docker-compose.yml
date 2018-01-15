@@ -15,8 +15,8 @@ services:
               max-file: "5"
 
         volumes:
-		    - ./blog/public:/usr/share/nginx/html
-		    - ./nginx:/etc/nginx/conf.d:ro
+            - ./blog/public:/usr/share/nginx/html
+            - ./nginx:/etc/nginx/conf.d:ro
             - ../letsencrypt:/etc/letsencrypt
             - ../ssl:/etc/nginx/ssl
 
