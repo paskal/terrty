@@ -60,13 +60,10 @@ build-resume:
 		--url https://terrty.net/cv/verhoturov.html \
 		--pdf verhoturov.pdf
 
-# blog generation, based on my customized source code
+# blog generation
 build-blog:
-	docker run -it --rm \
-		--mount type=bind,source=$(PWD)/blog/source/,target=/data/source/ \
-		--mount type=bind,source=$(PWD)/blog/public/,target=/data/public/ \
-		paskal/octopress \
-		generate
+	cd blog
+	hugo
 
 # build image with latest jsonresume-theme-kendall version
 build-image-resumejson:
