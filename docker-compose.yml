@@ -2,7 +2,6 @@ version: '3'
 services:
 
     nginx:
-        build: .
         image: umputun/nginx-le:latest
         hostname: nginx
         restart: always
@@ -29,3 +28,59 @@ services:
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
             - LE_FQDN=terrty.net
+
+    dnsmask:
+        image: andyshinn/dnsmasq:latest
+        hostname: dnsmasq
+        restart: always
+        container_name: dnsmasq
+
+        logging:
+          driver: json-file
+          options:
+              max-size: "10m"
+              max-file: "5"
+
+        ports:
+            - "53:53"
+
+        cap_add:
+            - NET_ADMIN
+
+    softethervpn:
+        image: siomiz/softethervpn
+        hostname: softethervpn
+        restart: always
+        container_name: softethervpn
+        env_file: ../softethervpn.env
+
+        logging:
+          driver: json-file
+          options:
+              max-size: "10m"
+              max-file: "5"
+
+        ports:
+            - "500:500/udp"
+            - "4500:4500/udp"
+            - "1701:1701/tcp"
+            - "1194:1194/udp"
+            - "5555:5555/tcp"
+            - "992:992/tcp"
+
+        cap_add:
+            - NET_ADMIN
+
+    pointim_bot:
+        build: ./pointim_bot
+        image: paskal/pointim_bot
+        hostname: pointim_bot
+        restart: always
+        container_name: pointim_bot
+        env_file: ../pointim_bot.env
+
+        logging:
+          driver: none
+
+        volumes:
+            - /root/cache.bin:/usr/pointim_bot/cache.bin
