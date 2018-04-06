@@ -106,25 +106,6 @@ services:
         ports:
             - "1088:1088/tcp"
 
-    socks:
-        image: dijedodol/simple-socks5-server:latest
-        hostname: socks
-        restart: always
-        container_name: socks
-        env_file: ../socks.env
-
-        environment:
-            - SSS_BIND=0.0.0.0:1081
-
-        logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
-
-        ports:
-            - "1081:1081/tcp"
-
     pointim_bot:
         build: ./pointim_bot
         image: paskal/pointim_bot
