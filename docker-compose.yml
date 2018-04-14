@@ -71,22 +71,6 @@ services:
         cap_add:
             - NET_ADMIN
 
-    socks_pub:
-        image: dijedodol/simple-socks5-server:latest
-        hostname: socks_pub
-        restart: always
-        container_name: socks_pub
-        env_file: ../socks_pub.env
-
-        logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
-
-        ports:
-            - "1080:1080/tcp"
-
     socks_telegram:
         image: dijedodol/simple-socks5-server:latest
         hostname: socks_telegram
