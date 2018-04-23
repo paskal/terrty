@@ -48,7 +48,7 @@ services:
             - NET_ADMIN
 
     softethervpn:
-        image: siomiz/softethervpn
+        image: siomiz/softethervpn:alpine
         hostname: softethervpn
         restart: always
         container_name: softethervpn
