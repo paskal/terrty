@@ -90,16 +90,3 @@ services:
         ports:
             - "1088:1088/tcp"
 
-    pointim_bot:
-        build: ./pointim_bot
-        image: paskal/pointim_bot
-        hostname: pointim_bot
-        restart: always
-        container_name: pointim_bot
-        env_file: ../pointim_bot.env
-
-        logging:
-          driver: none
-
-        volumes:
-            - /root/cache.bin:/usr/pointim_bot/cache.bin
