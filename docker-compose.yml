@@ -29,24 +29,6 @@ services:
             - LE_EMAIL=paskal.07@gmail.com
             - LE_FQDN=terrty.net
 
-    dnsmask:
-        image: andyshinn/dnsmasq:latest
-        hostname: dnsmasq
-        restart: always
-        container_name: dnsmasq
-
-        logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
-
-        ports:
-            - "53:53"
-
-        cap_add:
-            - NET_ADMIN
-
     softethervpn:
         image: siomiz/softethervpn:alpine
         hostname: softethervpn
