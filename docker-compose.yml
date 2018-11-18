@@ -15,7 +15,10 @@ services:
 
         volumes:
             - ./blog/public:/usr/share/nginx/html
-            - ./nginx:/etc/nginx/conf.d:ro
+            - ../ksinia/public/:/usr/share/nginx/html2
+            - ./nginx/terrty.net.conf:/etc/nginx/service1.conf
+            - ./nginx/ksinia.net.conf:/etc/nginx/service2.conf
+            - ./nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
             - ../letsencrypt:/etc/letsencrypt
             - ../ssl:/etc/nginx/ssl
 
@@ -27,7 +30,7 @@ services:
             - TZ=UTC
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=terrty.net
+            - LE_FQDN=terrty.net,ksinia.net
 
     softethervpn:
         image: siomiz/softethervpn:alpine
