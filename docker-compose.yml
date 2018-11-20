@@ -74,3 +74,32 @@ services:
         ports:
             - "1088:1088/tcp"
 
+    cv:
+        build: ./cv
+        image: paskal/jsonresume
+        command: export --theme kendall /tmp/verhoturov.html
+
+        logging:
+          driver: json-file
+          options:
+            max-size: "10m"
+            max-file: "5"
+
+        volumes:
+            - ./blog/public/cv/:/tmp/
+            - ./cv/resume.json:/data/resume.json:ro
+
+    pdf:
+        image: pink33n/html-to-pdf
+        command: --url https://terrty.net/cv/verhoturov.html --pdf verhoturov.pdf --scale 0.91
+        privileged: true
+
+        logging:
+          driver: json-file
+          options:
+            max-size: "10m"
+            max-file: "5"
+
+        volumes:
+            - ./blog/public/cv:/tmp/html-to-pdf
+
