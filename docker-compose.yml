@@ -77,7 +77,7 @@ services:
     cv:
         build: ./cv
         image: paskal/jsonresume
-        command: export --theme kendall /tmp/verhoturov.html
+        command: export --theme kendall /tmp/verkhoturov.html
 
         logging:
           driver: json-file
@@ -91,7 +91,7 @@ services:
 
     pdf:
         image: pink33n/html-to-pdf
-        command: --url https://terrty.net/cv/verhoturov.html --pdf verhoturov.pdf --scale 0.91
+        command: --url https://terrty.net/cv/verkhoturov.html --pdf verkhoturov.pdf --scale 0.91
         privileged: true
 
         logging:
