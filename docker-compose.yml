@@ -18,7 +18,7 @@ services:
             - ./nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./nginx/ksinia.net.conf:/etc/nginx/service2.conf
             - ./nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
-#            - ./nginx/mon.terrty.net.conf:/etc/nginx/service4.conf
+            - ./nginx/mon.terrty.net.conf:/etc/nginx/service4.conf
             - ./nginx/ssl.conf:/etc/nginx/ssl.conf
             - ../ssl:/etc/nginx/ssl
 
