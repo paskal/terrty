@@ -18,6 +18,7 @@ services:
             - ./nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./nginx/ksinia.net.conf:/etc/nginx/service2.conf
             - ./nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
+            - ./nginx/ssl.conf:/etc/nginx/ssl.conf
             - ../ssl:/etc/nginx/ssl
 
         ports:
@@ -44,10 +45,10 @@ services:
               max-file: "5"
 
         ports:
+#            - "1194:1194/udp" # OpenVPN, unused
             - "500:500/udp"
             - "4500:4500/udp"
             - "1701:1701/tcp"
-#            - "1194:1194/udp" # OpenVPN, unused
             - "5555:5555/tcp"
             - "992:992/tcp"
 
