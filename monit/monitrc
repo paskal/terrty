@@ -1,0 +1,5 @@
+set daemon  30
+set log syslog
+set httpd port 2812 and
+    allow guest:guest readonly
+include /etc/monit.d/*

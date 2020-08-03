@@ -17,6 +17,7 @@ services:
             - ../ksinia/public/:/usr/share/nginx/html2
             - ./nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./nginx/ksinia.net.conf:/etc/nginx/service2.conf
+            - ./nginx/mon.terrty.net.conf:/etc/nginx/service3.conf
             - ./nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
             - ./nginx/ssl.conf:/etc/nginx/ssl.conf
             - ../ssl:/etc/nginx/ssl
@@ -30,6 +31,24 @@ services:
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
             - LE_FQDN=terrty.net,ksinia.net
+    monit:
+        build: ./monit
+        image: paskal/monit-telegram
+        container_name: monit
+        hostname: monit
+        # ports:
+        # - 2812:2812
+        env_file: ../monit.env
+        logging:
+          driver: json-file
+          options:
+              max-size: "10m"
+              max-file: "5"
+        volumes:
+        - ./monit/monitrc:/etc/monitrc
+        - ./monit/web.monit:/etc/monit.d/web.monit
+        restart: unless-stopped
+        user: monit:users
 
     softethervpn:
         image: siomiz/softethervpn:alpine

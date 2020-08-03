@@ -1,0 +1,8 @@
+check host "https://favor-group.ru" with address favor-group.ru
+  if failed ping
+    then exec "/bin/monit2telegram"
+  if failed port 80 protocol http
+    then exec "/bin/monit2telegram"
+  if failed port 443 protocol https
+    and request / with content = "профнастил"
+    then exec "/bin/monit2telegram"
