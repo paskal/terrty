@@ -12,6 +12,12 @@ check host "https://favor-group.ru" with address favor-group.ru
     )
     for 3 times within 5 cycles
     then exec "/bin/monit2telegram"
+  if failed (
+    port 443 protocol https
+    and request /robots.txt with content = "Sitemap: https://favor-group.ru/sitemap.xml.*Host: https://favor-group.ru"
+    )
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
 
 check host "https://tula.favor-group.ru/" with address tula.favor-group.ru
   if failed ping
@@ -27,6 +33,12 @@ check host "https://tula.favor-group.ru/" with address tula.favor-group.ru
     )
     for 3 times within 5 cycles
     then exec "/bin/monit2telegram"
+  if failed (
+    port 443 protocol https
+    and request /robots.txt with content = "Sitemap: https://tula.favor-group.ru/sitemap.xml.*Host: https://tula.favor-group.ru"
+    )
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
 
 check host "https://spb.favor-group.ru" with address spb.favor-group.ru
   if failed ping
@@ -39,6 +51,12 @@ check host "https://spb.favor-group.ru" with address spb.favor-group.ru
     port 443 protocol https
     and request / with content = "профнастил"
     and certificate valid > 10 days
+    )
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
+  if failed (
+    port 443 protocol https
+    and request /robots.txt with content = "Sitemap: https://spb.favor-group.ru/sitemap.xml.*Host: https://spb.favor-group.ru"
     )
     for 3 times within 5 cycles
     then exec "/bin/monit2telegram"
