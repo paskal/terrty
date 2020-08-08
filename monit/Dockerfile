@@ -6,6 +6,7 @@ LABEL maintainer="Dmitry Verkhoturov"
 ARG MONIT2TELEGRAM_URL=https://github.com/matriphe/monit2telegram.git
 
 ADD monit2telegram.sh /bin/monit2telegram
+ADD sitemap_check.sh /bin/sitemap_check
 
 RUN \
     echo "*** install monit and dependencies ***" && \
@@ -13,6 +14,7 @@ RUN \
     echo "*** install monit2telegram ***" && \
     wget https://raw.githubusercontent.com/matriphe/monit2telegram/master/sendtelegram.sh -O /bin/sendtelegram && \
     chmod +x /bin/sendtelegram && \
+    chmod +x /bin/sitemap_check && \
     chmod +x /bin/monit2telegram
 
 RUN \
