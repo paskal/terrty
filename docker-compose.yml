@@ -7,10 +7,10 @@ services:
         container_name: nginx
 
         logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
 
         volumes:
             - ./blog/public:/usr/share/nginx/html
@@ -37,18 +37,19 @@ services:
         container_name: monit
         hostname: monit
         expose:
-        - "2812"
+            - "2812"
+        # uncomment for local tests
         # ports:
         # - 2812:2812
         env_file: ../monit.env
         logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
         volumes:
-        - ./monit/monitrc:/etc/monitrc
-        - ./monit/web.monit:/etc/monit.d/web.monit
+            - ./monit/monitrc:/etc/monitrc
+            - ./monit/web.monit:/etc/monit.d/web.monit
         restart: unless-stopped
         user: monit:users
 
@@ -60,10 +61,10 @@ services:
         env_file: ../softethervpn.env
 
         logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
 
         ports:
 #            - "1194:1194/udp" # OpenVPN, unused
@@ -87,10 +88,10 @@ services:
             - SSS_BIND=0.0.0.0:1088
 
         logging:
-          driver: json-file
-          options:
-              max-size: "10m"
-              max-file: "5"
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
 
         ports:
             - "1088:1088/tcp"
