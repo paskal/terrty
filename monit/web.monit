@@ -60,3 +60,24 @@ check host "https://spb.favor-group.ru" with address spb.favor-group.ru
     )
     for 3 times within 5 cycles
     then exec "/bin/monit2telegram"
+
+check program "sitemap.xml oldest entry for favor-group.ru"
+  with path "/bin/sitemap_check https://favor-group.ru/sitemap.xml"
+  timeout 10 seconds
+  if status != 0
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
+
+check program "sitemap.xml oldest entry for tula.favor-group.ru"
+  with path "/bin/sitemap_check https://tula.favor-group.ru/sitemap.xml"
+  timeout 10 seconds
+  if status != 0
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
+
+check program "sitemap.xml oldest entry for sbp.favor-group.ru"
+  with path "/bin/sitemap_check https://spb.favor-group.ru/sitemap.xml"
+  timeout 10 seconds
+  if status != 0
+    for 3 times within 5 cycles
+    then exec "/bin/monit2telegram"
