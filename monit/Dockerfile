@@ -7,7 +7,6 @@ ARG MONIT2TELEGRAM_URL=https://github.com/matriphe/monit2telegram.git
 
 ADD monit2telegram.sh /bin/monit2telegram
 
-# Compile and install monit + monit2telegram
 RUN \
     echo "*** install monit and dependencies ***" && \
     apk add --update --no-cache monit bash curl shadow && \
@@ -23,6 +22,14 @@ RUN \
     usermod -G users monit && \
     mkdir /config && \
     chown monit:users /config
+
+RUN \
+    echo "*** install sitemap check and dependencies ***" && \
+    apk add --update --no-cache openssl-dev && \
+    mkdir /lib64 && \
+    ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
+    wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
+    | tar -xzv xidel -C /bin
 
 EXPOSE 2812
 
