@@ -26,7 +26,7 @@ RUN \
     chown monit:users /config
 
 RUN \
-    echo "*** install sitemap check and dependencies ***" && \
+    echo "*** install xidel ***" && \
     apk add --update --no-cache openssl-dev && \
     mkdir /lib64 && \
     ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
