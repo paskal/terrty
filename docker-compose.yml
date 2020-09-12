@@ -15,12 +15,12 @@ services:
         volumes:
             - ./blog/public:/usr/share/nginx/html
             - ../ksinia/public/:/usr/share/nginx/html2
-            - ./nginx/terrty.net.conf:/etc/nginx/service1.conf
-            - ./nginx/ksinia.net.conf:/etc/nginx/service2.conf
-            - ./nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
-            - ./nginx/monit.terrty.net.conf:/etc/nginx/service4.conf
-            - ./nginx/grafana.terrty.net.conf:/etc/nginx/service5.conf
-            - ./nginx/ssl.conf:/etc/nginx/ssl.conf
+            - ./config/nginx/terrty.net.conf:/etc/nginx/service1.conf
+            - ./config/nginx/ksinia.net.conf:/etc/nginx/service2.conf
+            - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
+            - ./config/nginx/monit.terrty.net.conf:/etc/nginx/service4.conf
+            - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service5.conf
+            - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
             - ../ssl:/etc/nginx/ssl
 
         ports:
