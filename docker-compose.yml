@@ -57,9 +57,9 @@ services:
     grafana:
         image: grafana/grafana
         volumes:
+            - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
             # Data persistence
-            - ../docker/grafana-data:/var/lib/grafana
-            - ../docker/config/grafana.ini:/etc/grafana/grafana.ini:ro
+            - ./docker/grafana-data:/var/lib/grafana
         expose:
             - "3000"
         # uncomment for local tests
