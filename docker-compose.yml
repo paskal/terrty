@@ -8,6 +8,7 @@ services:
         depends_on:
             - monit
             - grafana
+            - zabbix-web
 
         logging:
             driver: json-file
