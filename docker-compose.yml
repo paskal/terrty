@@ -42,7 +42,7 @@ services:
         # uncomment for local tests
         # ports:
         # - 2812:2812
-        env_file: ./docker/config/monit.env
+        env_file: docker/environment/monit.env
         logging:
             driver: json-file
             options:
@@ -75,7 +75,7 @@ services:
         hostname: softethervpn
         restart: always
         container_name: softethervpn
-        env_file: ./docker/config/softethervpn.env
+        env_file: docker/environment/softethervpn.env
 
         logging:
             driver: json-file
@@ -100,7 +100,7 @@ services:
         hostname: socks_telegram
         restart: always
         container_name: socks_telegram
-        env_file: ./docker/config/socks_telegram.env
+        env_file: docker/environment/socks_telegram.env
 
         environment:
             - SSS_BIND=0.0.0.0:1088
