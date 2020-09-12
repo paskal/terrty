@@ -74,7 +74,7 @@ services:
         # ports:
         #     - 3000:3000
         environment:
-            - TZ=Europe/Moscow
+            - TZ=UTC
             - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
             - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
 
