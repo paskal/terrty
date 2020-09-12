@@ -84,9 +84,8 @@ services:
         restart: always
         depends_on:
             - mysql-server
-        env_file:
-            # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-            - docker/environment/mysql.env
+        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+        env_file: docker/environment/mysql.env
         environment:
             - TZ=UTC
             - DB_SERVER_HOST=mysql-server
