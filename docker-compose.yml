@@ -110,6 +110,9 @@ services:
         volumes:
             # Data persistence
             - ./docker/mysql-data:/var/lib/mysql
+        # fix for `mbind: Operation not permitted`
+        cap_add:
+            - SYS_NICE  # CAP_SYS_NICE
         restart: always
 
     softethervpn:
