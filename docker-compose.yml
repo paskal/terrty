@@ -49,8 +49,8 @@ services:
                 max-size: "10m"
                 max-file: "5"
         volumes:
-            - ./monit/monitrc:/etc/monitrc
-            - ./monit/web.monit:/etc/monit.d/web.monit
+            - ./config/monit/monitrc:/etc/monitrc:ro
+            - ./config/monit/web.monit:/etc/monit.d/web.monit:ro
         restart: unless-stopped
         user: monit:users
 
