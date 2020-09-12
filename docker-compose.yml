@@ -25,6 +25,7 @@ services:
             - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
             - ./config/nginx/monit.terrty.net.conf:/etc/nginx/service4.conf
             - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service5.conf
+            - ./config/nginx/zabbix.terrty.net.conf:/etc/nginx/service6.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
             # nginx ssl certificate to prevent renewal on each restart
             - ./docker/ssl:/etc/nginx/ssl
@@ -63,6 +64,7 @@ services:
 
     grafana:
         image: grafana/grafana
+        restart: always
         volumes:
             - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
             # Data persistence
@@ -77,6 +79,26 @@ services:
             - TZ=UTC
             - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
             - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
+
+    zabbix-web:
+        image: zabbix/zabbix-web-nginx-mysql:latest
+        container_name: zabbix-web
+        restart: always
+        depends_on:
+            - mysql-server
+            - zabbix-server
+        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+        env_file: docker/environment/mysql.env
+        environment:
+            - TZ=UTC
+            - DB_SERVER_HOST=mysql-server
+            - ZBX_SERVER_HOST=zabbix-server
+            - PHP_TZ=Europe/Moscow
+        expose:
+            - "8080"
+        # uncomment for local tests
+        # ports:
+        #     - "8080:8080"
 
     zabbix-server:
         image: zabbix/zabbix-server-mysql:latest
