@@ -5,6 +5,8 @@ services:
         hostname: nginx
         restart: always
         container_name: nginx
+        depends_on:
+            - monit
 
         logging:
             driver: json-file
@@ -49,6 +51,7 @@ services:
                 max-size: "10m"
                 max-file: "5"
         volumes:
+            # do `chown 1000:1000 ./config/monit/monitrc` as otherwise there will be permission error on start
             - ./config/monit/monitrc:/etc/monitrc:ro
             - ./config/monit/web.monit:/etc/monit.d/web.monit:ro
         restart: unless-stopped
