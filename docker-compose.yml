@@ -78,17 +78,30 @@ services:
             - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
             - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
 
+    zabbix-server:
+        image: zabbix/zabbix-server-mysql:latest
+        container_name: zabbix-server
+        restart: always
+        depends_on:
+            - mysql-server
+        env_file:
+            # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+            - docker/environment/mysql.env
+        environment:
+            - TZ=UTC
+            - DB_SERVER_HOST=mysql-server
+        ports:
+            - "10051:10051"
+
     mysql-server:
         image: mysql:8.0
-        container_name: zabbix-mysql
-        command: --character-set-server=utf8 --collation-server=utf8_bin
-        # MYSQL_PASSWORD
+        container_name: mysql-server
+        command: --character-set-server=utf8 --collation-server=utf8_bin --default-authentication-plugin=mysql_native_password
+        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
         env_file: docker/environment/mysql.env
         environment:
             - TZ=UTC
             - MYSQL_RANDOM_ROOT_PASSWORD=true
-            - MYSQL_DATABASE=zabbix
-            - MYSQL_USER=zabbix
         expose:
             - "3306"
         # uncomment for local tests
