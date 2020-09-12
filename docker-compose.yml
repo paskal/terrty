@@ -16,15 +16,18 @@ services:
                 max-file: "5"
 
         volumes:
+            # terrty.net blog source code
             - ./blog/public:/usr/share/nginx/html
-            - ../ksinia/public/:/usr/share/nginx/html2
+            # ksinia.net source code
+            - ./docker/ksinia/public/:/usr/share/nginx/html2
             - ./config/nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./config/nginx/ksinia.net.conf:/etc/nginx/service2.conf
             - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
             - ./config/nginx/monit.terrty.net.conf:/etc/nginx/service4.conf
             - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service5.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
-            - ../ssl:/etc/nginx/ssl
+            # nginx ssl certificate to prevent renewal on each restart
+            - ./docker/ssl:/etc/nginx/ssl
 
         ports:
             - "80:80"
