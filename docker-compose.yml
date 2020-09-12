@@ -66,6 +66,7 @@ services:
         volumes:
             - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
             # Data persistence
+            # to make it work run chown 472:472 -R ./docker/grafana-data
             - ./docker/grafana-data:/var/lib/grafana
         expose:
             - "3000"
