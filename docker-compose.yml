@@ -115,6 +115,21 @@ services:
         ports:
             - "10051:10051"
 
+    # In order for data collection from Zabbix Server to work,
+    # you'll need to go to host settings in Zabbix and change Agent
+    # interface from "IP 127.0.0.1" to "DNS Name zabbix-agent"
+    zabbix-agent:
+        image: zabbix/zabbix-agent2:latest
+        container_name: zabbix-agent
+        restart: always
+        privileged: true
+        environment:
+            - TZ=UTC
+            - ZBX_HOSTNAME=Zabbix server
+            - ZBX_SERVER_HOST=zabbix-server
+        expose:
+            - "10050"
+
     mysql-server:
         image: mysql:8.0
         container_name: mysql-server
