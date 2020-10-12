@@ -126,7 +126,7 @@ services:
         command: |
             "
             apk add openssl sudo &&
-            sudo -u zabbix \
+            sudo -Eu zabbix \
             /usr/bin/docker-entrypoint.sh \
             /usr/sbin/zabbix_agent2 --foreground -c /etc/zabbix/zabbix_agent2.conf"
         container_name: zabbix-agent
