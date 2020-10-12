@@ -39,7 +39,8 @@ services:
             - TZ=UTC
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=grafana.terrty.net,zabbix.terrty.net,monit.terrty.net,terrty.net,ksinia.net
+            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,monit.terrty.net
+
     monit:
         build: ./monit
         image: paskal/monit-telegram
@@ -120,9 +121,21 @@ services:
     # interface from "IP 127.0.0.1" to "DNS Name zabbix-agent"
     zabbix-agent:
         image: zabbix/zabbix-agent2:latest
+        # hack to install additional packages before start of the container
+        entrypoint: /bin/bash -c
+        command: |
+            "
+            apk add openssl sudo &&
+            sudo -u zabbix \
+            /usr/bin/docker-entrypoint.sh \
+            /usr/sbin/zabbix_agent2 --foreground -c /etc/zabbix/zabbix_agent2.conf"
         container_name: zabbix-agent
         restart: always
         privileged: true
+        user: root # hack to add packages before agent start
+        volumes:
+            - ./config/zabbix/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d
+            - ./config/zabbix/scripts:/etc/zabbix/scripts
         environment:
             - TZ=UTC
             - ZBX_HOSTNAME=Zabbix server
