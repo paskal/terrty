@@ -110,9 +110,21 @@ services:
             - mysql-server
         # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
         env_file: docker/environment/mysql.env
+        # hack to install additional packages before start of the container
+        entrypoint: /bin/bash -c
+        command: |
+            "apk add openssl sudo &&
+            sudo -Eu zabbix \
+            /usr/bin/docker-entrypoint.sh \
+            /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
+        privileged: true
+        user: root # hack to add packages before the server start
+        volumes:
+            - ./config/zabbix/externalscripts:/usr/lib/zabbix/externalscripts
         environment:
             - TZ=UTC
             - DB_SERVER_HOST=mysql-server
+            - ZBX_TIMEOUT=30
         ports:
             - "10051:10051"
 
@@ -121,21 +133,9 @@ services:
     # interface from "IP 127.0.0.1" to "DNS Name zabbix-agent"
     zabbix-agent:
         image: zabbix/zabbix-agent2:latest
-        # hack to install additional packages before start of the container
-        entrypoint: /bin/bash -c
-        command: |
-            "
-            apk add openssl sudo &&
-            sudo -Eu zabbix \
-            /usr/bin/docker-entrypoint.sh \
-            /usr/sbin/zabbix_agent2 --foreground -c /etc/zabbix/zabbix_agent2.conf"
         container_name: zabbix-agent
         restart: always
         privileged: true
-        user: root # hack to add packages before agent start
-        volumes:
-            - ./config/zabbix/zabbix_agentd.d:/etc/zabbix/zabbix_agentd.d
-            - ./config/zabbix/scripts:/etc/zabbix/scripts
         environment:
             - TZ=UTC
             - ZBX_HOSTNAME=Zabbix server
