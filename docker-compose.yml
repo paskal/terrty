@@ -113,7 +113,7 @@ services:
         # hack to install additional packages before start of the container
         entrypoint: /bin/bash -c
         command: |
-            "apk add openssl sudo &&
+            "apk add openssl sudo coreutils &&
             sudo -Eu zabbix \
             /usr/bin/docker-entrypoint.sh \
             /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
