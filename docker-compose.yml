@@ -112,8 +112,16 @@ services:
         env_file: docker/environment/mysql.env
         # hack to install additional packages before start of the container
         entrypoint: /bin/bash -c
+        # I think there is a dedicated place in hell for people who do this kind of stuff
+        # in docker-compose instead of creating their own Dockerfile.
         command: |
-            "apk add openssl sudo coreutils &&
+            "apk add --update --no-cache openssl sudo coreutils openssl-dev && \
+            # xidel installation, including openssl-dev above \
+            mkdir -p /lib64 && \
+            ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
+            wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
+            | tar -xz xidel -C /bin && \
+            # end of xidel installation \
             sudo -Eu zabbix \
             /usr/bin/docker-entrypoint.sh \
             /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
