@@ -6,7 +6,6 @@ services:
         restart: always
         container_name: nginx
         depends_on:
-            - monit
             - grafana
             - zabbix-web
 
@@ -24,9 +23,8 @@ services:
             - ./config/nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./config/nginx/ksinia.net.conf:/etc/nginx/service2.conf
             - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
-            - ./config/nginx/monit.terrty.net.conf:/etc/nginx/service4.conf
-            - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service5.conf
-            - ./config/nginx/zabbix.terrty.net.conf:/etc/nginx/service6.conf
+            - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service4.conf
+            - ./config/nginx/zabbix.terrty.net.conf:/etc/nginx/service5.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
             # nginx ssl certificate to prevent renewal on each restart
             - ./docker/ssl:/etc/nginx/ssl
@@ -39,30 +37,7 @@ services:
             - TZ=UTC
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,monit.terrty.net
-
-    monit:
-        build: ./monit
-        image: paskal/monit-telegram
-        container_name: monit
-        hostname: monit
-        expose:
-            - "2812"
-        # uncomment for local tests
-        # ports:
-        # - 2812:2812
-        env_file: docker/environment/monit.env
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-        volumes:
-            # do `chown 1000:1000 ./config/monit/monitrc` as otherwise there will be permission error on start
-            - ./config/monit/monitrc:/etc/monitrc:ro
-            - ./config/monit/web.monit:/etc/monit.d/web.monit:ro
-        restart: unless-stopped
-        user: monit:users
+            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net
 
     grafana:
         image: grafana/grafana
