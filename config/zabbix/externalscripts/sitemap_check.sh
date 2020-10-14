@@ -21,14 +21,9 @@ if [ -z "$lines" ]; then
 fi
 
 # check dates in files and get oldest one in unix time (seconds) format
-oldest_renewal=$(echo $lines | tr ' ' '\0' | xargs -I{} -0 date -D '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | head -1)
+oldest_renewal=$(echo $lines | tr ' ' '\0' | xargs -I{} -0 date -d '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | head -1)
 
 # get age in complete days for oldest lastmod entry
 updated_days_ago=$((($(date +%s) - $oldest_renewal) / (60 * 60 * 24)))
-alert_days_threshold=10
 
-# compare oldest lastmod age in days with threshold
-if [ "$updated_days_ago" -gt "$alert_days_threshold" ]; then
-  echo "Oldest sitemap entry in $url is $updated_days_ago days old (alert threshold is $alert_days_threshold days)"
-  exit 102
-fi
+echo $updated_days_ago
