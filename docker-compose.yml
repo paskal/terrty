@@ -171,7 +171,6 @@ services:
         env_file: docker/environment/mysql.env
         environment:
             - TZ=UTC
-            - MYSQL_RANDOM_ROOT_PASSWORD=true
         expose:
             - "3306"
         # uncomment for local tests
@@ -207,18 +206,18 @@ services:
                 max-file: "5"
 
         expose:
-            - "443"
+            - "80"
         volumes_from:
             - pmm-data
-        # SERVER_PASSWORD
-        env_file: docker/environment/pmm.env
-        environment:
-            - SERVER_USER=pmm_docker_user
 
     pmm-client:
         image: perconalab/pmm-client:2
-        hostname: pmm-client-ps
-        container_name: pmm-client-ps
+        hostname: pmm-client-zabbix
+        container_name: pmm-client
+        depends_on:
+            - mysql-server
+        volumes:
+            - ./docker/pmm/pmm-agent.yaml:/usr/local/percona/pmm2/pmm-agent.yaml
 
         logging:
             driver: json-file
@@ -227,15 +226,8 @@ services:
                 max-file: "5"
 
         restart: always
-        # PMM_PASSWORD,DB_PASSWORD
-        env_file: docker/environment/pmm.env
         environment:
-            - PMM_SERVER=pmm-server:443
-            - PMM_USER=pmm_docker_user
-            - DB_TYPE=mysql
-            - DB_HOST=mysql-server
-            - DB_PORT=3306
-            - DB_USER=root
+            - PMM_AGENT_CONFIG_FILE=/usr/local/percona/pmm2/pmm-agent.yaml
 
     softethervpn:
         image: siomiz/softethervpn:alpine
