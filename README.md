@@ -1,1 +1,2 @@
-Source code for [https://terrty.net](https://terrty.net) [blog](./blog), [Dmitry's CV](./cv),
+Source code for different (mostly, monitoring) services running on https://terrty.net
+
