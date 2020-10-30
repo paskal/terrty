@@ -116,7 +116,7 @@ services:
             "apk add --update --no-cache openssl sudo coreutils openssl-dev && \
             # xidel installation, including openssl-dev above \
             mkdir -p /lib64 && \
-            ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
+            ln -fs /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
             wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
             | tar -xz xidel -C /bin && \
             # end of xidel installation \
