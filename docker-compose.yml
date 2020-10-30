@@ -209,6 +209,9 @@ services:
 
         expose:
             - "80"
+        # can't connect to the server trough proxy
+        ports:
+            - "4443:443"
         volumes_from:
             - pmm-data
 
