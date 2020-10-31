@@ -18,7 +18,7 @@ services:
 
         volumes:
             # terrty.net blog source code
-            - ./blog/public:/usr/share/nginx/html
+            - ../blog/public:/usr/share/nginx/html
             # ksinia.net source code
             - ./docker/ksinia/public/:/usr/share/nginx/html2
             - ./config/nginx/terrty.net.conf:/etc/nginx/service1.conf
@@ -208,7 +208,7 @@ services:
                 max-file: "5"
 
         expose:
-            - "80"
+            - "443"
         # can't connect to the server trough proxy
         ports:
             - "4443:443"
