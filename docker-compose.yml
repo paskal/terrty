@@ -20,7 +20,7 @@ services:
             # terrty.net blog source code
             - ../blog/public:/usr/share/nginx/html
             # ksinia.net source code
-            - ./docker/ksinia/public/:/usr/share/nginx/html2
+            - ./private/ksinia/public/:/usr/share/nginx/html2
             - ./config/nginx/terrty.net.conf:/etc/nginx/service1.conf
             - ./config/nginx/ksinia.net.conf:/etc/nginx/service2.conf
             - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
@@ -29,7 +29,7 @@ services:
             - ./config/nginx/pmm.terrty.net.conf:/etc/nginx/service6.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
             # nginx ssl certificate to prevent renewal on each restart
-            - ./docker/ssl:/etc/nginx/ssl
+            - ./private/ssl:/etc/nginx/ssl
 
         ports:
             - "80:80"
@@ -47,8 +47,8 @@ services:
         volumes:
             - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
             # Data persistence
-            # to make it work run chown 472:472 -R ./docker/grafana-data
-            - ./docker/grafana-data:/var/lib/grafana
+            # to make it work run chown 472:472 -R ./private/grafana-data
+            - ./private/grafana-data:/var/lib/grafana
 
         logging:
             driver: json-file
@@ -81,7 +81,7 @@ services:
                 max-file: "5"
 
         # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: docker/environment/mysql.env
+        env_file: private/environment/mysql.env
         environment:
             - TZ=UTC
             - DB_SERVER_HOST=mysql-server
@@ -107,7 +107,7 @@ services:
                 max-file: "5"
 
         # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: docker/environment/mysql.env
+        env_file: private/environment/mysql.env
         # hack to install additional packages before start of the container
         entrypoint: /bin/bash -c
         # I think there is a dedicated place in hell for people who do this kind of stuff
@@ -172,7 +172,7 @@ services:
                 max-file: "5"
 
         # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: docker/environment/mysql.env
+        env_file: private/environment/mysql.env
         environment:
             - TZ=UTC
         expose:
@@ -182,7 +182,7 @@ services:
         # - 3306:3306
         volumes:
             # Data persistence
-            - ./docker/mysql-data:/var/lib/mysql
+            - ./private/mysql-data:/var/lib/mysql
         # fix for `mbind: Operation not permitted`
         cap_add:
             - SYS_NICE  # CAP_SYS_NICE
@@ -224,7 +224,7 @@ services:
         depends_on:
             - mysql-server
         volumes:
-            - ./docker/pmm/pmm-agent.yaml:/usr/local/percona/pmm2/pmm-agent.yaml
+            - ./private/pmm/pmm-agent.yaml:/usr/local/percona/pmm2/pmm-agent.yaml
 
         logging:
             driver: json-file
@@ -241,7 +241,7 @@ services:
         hostname: softethervpn
         restart: always
         container_name: softethervpn
-        env_file: docker/environment/softethervpn.env
+        env_file: private/environment/softethervpn.env
 
         logging:
             driver: json-file
@@ -266,7 +266,7 @@ services:
         hostname: socks_telegram
         restart: always
         container_name: socks_telegram
-        env_file: docker/environment/socks_telegram.env
+        env_file: private/environment/socks_telegram.env
 
         environment:
             - SSS_BIND=0.0.0.0:1088
