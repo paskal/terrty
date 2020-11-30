@@ -159,8 +159,6 @@ services:
             - TZ=UTC
             - ZBX_HOSTNAME=Zabbix server
             - ZBX_SERVER_HOST=zabbix-server
-        expose:
-            - "10050"
 
     mysql-server:
         image: mysql:8.0
@@ -170,6 +168,7 @@ services:
                 - --collation-server=utf8mb4_bin
                 - --default-authentication-plugin=mysql_native_password
                 - --innodb-monitor-enable=all
+                - --expire-logs-days=1
 
         logging:
             driver: json-file
