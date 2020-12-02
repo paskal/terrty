@@ -222,25 +222,6 @@ services:
         volumes_from:
             - pmm-data
 
-    pmm-client:
-        image: perconalab/pmm-client:2
-        hostname: pmm-client-zabbix
-        container_name: pmm-client
-        depends_on:
-            - mysql-server
-        volumes:
-            - ./private/pmm/pmm-agent.yaml:/usr/local/percona/pmm2/pmm-agent.yaml
-
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-
-        restart: always
-        environment:
-            - PMM_AGENT_CONFIG_FILE=/usr/local/percona/pmm2/pmm-agent.yaml
-
     softethervpn:
         image: siomiz/softethervpn:alpine
         hostname: softethervpn
