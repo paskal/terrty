@@ -8,7 +8,6 @@ services:
         depends_on:
             - grafana
             - zabbix-web
-            - pmm-server
 
         logging:
             driver: json-file
@@ -26,7 +25,6 @@ services:
             - ./config/nginx/theatrestudio.ru.conf:/etc/nginx/service3.conf
             - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service4.conf
             - ./config/nginx/zabbix.terrty.net.conf:/etc/nginx/service5.conf
-            - ./config/nginx/pmm.terrty.net.conf:/etc/nginx/service6.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
             # nginx ssl certificate to prevent renewal on each restart
             - ./private/ssl:/etc/nginx/ssl
@@ -39,7 +37,7 @@ services:
             - TZ=UTC
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,pmm.terrty.net
+            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net
 
     grafana:
         image: grafana/grafana
@@ -192,35 +190,6 @@ services:
         cap_add:
             - SYS_NICE  # CAP_SYS_NICE
         restart: always
-
-    # Percona monitoring tools
-    pmm-data:
-        image: percona/pmm-server:2
-        container_name: pmm-data
-        hostname: pmm-data
-        volumes:
-            - /srv
-        entrypoint: /bin/true
-
-    pmm-server:
-        image: percona/pmm-server:2
-        hostname: pmm-server
-        container_name: pmm-server
-        restart: always
-
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-
-        expose:
-            - "443"
-        # can't connect to the server trough proxy
-        ports:
-            - "4443:443"
-        volumes_from:
-            - pmm-data
 
     softethervpn:
         image: siomiz/softethervpn:alpine
