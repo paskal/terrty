@@ -42,6 +42,8 @@ services:
 
     grafana:
         image: grafana/grafana
+        container_name: grafana
+        hostname: grafana
         restart: always
         volumes:
             - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
@@ -68,6 +70,7 @@ services:
     zabbix-web:
         image: zabbix/zabbix-web-nginx-mysql:latest
         container_name: zabbix-web
+        hostname: zabbix-web
         restart: always
         depends_on:
             - mysql-server
@@ -95,6 +98,7 @@ services:
     zabbix-server:
         image: zabbix/zabbix-server-mysql:latest
         container_name: zabbix-server
+        hostname: zabbix-server
         restart: always
         depends_on:
             - mysql-server
