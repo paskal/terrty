@@ -26,6 +26,7 @@ services:
             - ./config/nginx/grafana.terrty.net.conf:/etc/nginx/service4.conf
             - ./config/nginx/zabbix.terrty.net.conf:/etc/nginx/service5.conf
             - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
+            - ./config/nginx/static.conf:/etc/nginx/static.conf
             -  ./config/nginx/conf.d:/etc/nginx/conf.d-le
             # nginx ssl certificate to prevent renewal on each restart
             - ./private/ssl:/etc/nginx/ssl
