@@ -4,7 +4,7 @@
 url=$1
 
 if [ -z "$url" ]; then
-  echo "This script checks oldest sitemap entry from URL given as an argument"
+  echo "This script checks newest sitemap entry from URL given as an argument"
   echo "and gives non-zero exit code in case of problems."
   echo "Please set URL for check as first argument for the script, for example:"
   echo "$0 https://favor-group.ru/sitemap.xml"
@@ -21,9 +21,9 @@ if [ -z "$lines" ]; then
 fi
 
 # check dates in files and get oldest one in unix time (seconds) format
-oldest_renewal=$(echo $lines | tr ' ' '\0' | xargs -I{} -0 date -d '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | head -1)
+newest_renewal=$(echo $lines | tr ' ' '\0' | xargs -I{} -0 date -d '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | tail -1)
 
-# get age in complete days for oldest lastmod entry
-updated_days_ago=$((($(date +%s) - $oldest_renewal) / (60 * 60 * 24)))
+# get age in complete days for newest lastmod entry
+updated_days_ago=$((($(date +%s) - $newest_renewal) / (60 * 60 * 24)))
 
 echo $updated_days_ago
