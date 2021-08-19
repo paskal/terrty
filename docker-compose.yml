@@ -8,6 +8,7 @@ services:
         depends_on:
             - grafana
             - zabbix-web
+            - plausible
 
         logging:
             driver: json-file
@@ -34,7 +35,7 @@ services:
             - TZ=UTC
             - LETSENCRYPT=true
             - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net
+            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net
 
     grafana:
         image: grafana/grafana
@@ -235,3 +236,84 @@ services:
 
         ports:
             - "1088:1088/tcp"
+
+    plausible_db:
+        image: postgres:12
+        hostname: plausible_db
+        container_name: plausible_db
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=postgres
+
+    plausible_events_db:
+        image: yandex/clickhouse-server:21.3.2.5
+        hostname: plausible_events_db
+        container_name: plausible_events_db
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
+        volumes:
+            - event-data:/var/lib/clickhouse
+            - ./config/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+            - ./config/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+        ulimits:
+            nofile:
+                soft: 262144
+                hard: 262144
+
+    geoip:
+      image: maxmindinc/geoipupdate
+      hostname: geoip
+      container_name: geoip
+      logging:
+        driver: json-file
+        options:
+          max-size: "10m"
+          max-file: "5"
+      environment:
+        - GEOIPUPDATE_EDITION_IDS=GeoLite2-Country
+        - GEOIPUPDATE_FREQUENCY=168 # update every 7 days
+      # GEOIPUPDATE_ACCOUNT_ID, GEOIPUPDATE_LICENSE_KEY
+      env_file: private/environment/geoip.env
+      volumes:
+        - geoip:/usr/share/GeoIP
+
+    plausible:
+        image: plausible/analytics:latest
+        hostname: plausible
+        container_name: plausible
+        #command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
+        #command: /entrypoint.sh run
+        logging:
+            driver: json-file
+            options:
+                max-size: "10m"
+                max-file: "5"
+        depends_on:
+            - plausible_db
+            - plausible_events_db
+        expose:
+            - "8000"
+        environment:
+            - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
+              #- SMTP_HOST_ADDR=mailgun
+        volumes:
+            - geoip:/geoip:ro
+        # ADMIN_USER_EMAIL, ADMIN_USER_NAME, ADMIN_USER_PWD, BASE_URL, SECRET_KEY_BASE
+        env_file: private/environment/plausible.env
+
+volumes:
+    db-data:
+        driver: local
+    event-data:
+        driver: local
+    geoip:
+        driver: local
