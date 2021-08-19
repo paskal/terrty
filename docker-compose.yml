@@ -1,319 +1,316 @@
 version: '2'
 services:
-    nginx:
-        image: umputun/nginx-le:latest
-        hostname: nginx
-        restart: always
-        container_name: nginx
-        depends_on:
-            - grafana
-            - zabbix-web
-            - plausible
+  nginx:
+    image: umputun/nginx-le:latest
+    hostname: nginx
+    restart: always
+    container_name: nginx
+    depends_on:
+      - grafana
+      - zabbix-web
+      - plausible
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        volumes:
-            # terrty.net blog source code
-            - ../blog/public:/usr/share/nginx/html
-            # ksinia.net source code
-            - ./private/ksinia/public/:/usr/share/nginx/html2
-            - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
-            - ./config/nginx/static.conf:/etc/nginx/static.conf
-            - ./config/nginx/conf.d:/etc/nginx/conf.d-le
-            # nginx ssl certificate to prevent renewal on each restart
-            - ./private/ssl:/etc/nginx/ssl
+    volumes:
+      # terrty.net blog source code
+      - ../blog/public:/usr/share/nginx/html
+      # ksinia.net source code
+      - ./private/ksinia/public/:/usr/share/nginx/html2
+      - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
+      - ./config/nginx/static.conf:/etc/nginx/static.conf
+      - ./config/nginx/conf.d:/etc/nginx/conf.d-le
+      # nginx ssl certificate to prevent renewal on each restart
+      - ./private/ssl:/etc/nginx/ssl
 
-        ports:
-            - "80:80"
-            - "443:443"
+    ports:
+      - "80:80"
+      - "443:443"
 
-        environment:
-            - TZ=UTC
-            - LETSENCRYPT=true
-            - LE_EMAIL=paskal.07@gmail.com
-            - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net
+    environment:
+      - TZ=UTC
+      - LETSENCRYPT=true
+      - LE_EMAIL=paskal.07@gmail.com
+      - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net
 
-    grafana:
-        image: grafana/grafana
-        container_name: grafana
-        hostname: grafana
-        restart: always
-        volumes:
-            - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
-            # Data persistence
-            # to make it work run chown 472:472 -R ./private/grafana-data
-            - ./private/grafana-data:/var/lib/grafana
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    hostname: grafana
+    restart: always
+    volumes:
+      - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
+      # Data persistence
+      # to make it work run chown 472:472 -R ./private/grafana-data
+      - ./private/grafana-data:/var/lib/grafana
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        expose:
-            - "3000"
-        # uncomment for local tests
-        # ports:
-        #     - 3000:3000
-        environment:
-            - TZ=UTC
-            - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
-            - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
+    expose:
+      - "3000"
+    # uncomment for local tests
+    # ports:
+    #     - 3000:3000
+    environment:
+      - TZ=UTC
+      - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
 
-    zabbix-web:
-        image: zabbix/zabbix-web-nginx-mysql:latest
-        container_name: zabbix-web
-        hostname: zabbix-web
-        restart: always
-        depends_on:
-            - mysql-server
-            - zabbix-server
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-mysql:latest
+    container_name: zabbix-web
+    hostname: zabbix-web
+    restart: always
+    depends_on:
+      - mysql-server
+      - zabbix-server
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: private/environment/mysql.env
-        environment:
-            - TZ=UTC
-            - DB_SERVER_HOST=mysql-server
-            - ZBX_SERVER_HOST=zabbix-server
-            - PHP_TZ=Europe/Moscow
-        expose:
-            - "8080"
-        # uncomment for local tests
-        # ports:
-        #     - "8080:8080"
+    # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+    env_file: private/environment/mysql.env
+    environment:
+      - TZ=UTC
+      - DB_SERVER_HOST=mysql-server
+      - ZBX_SERVER_HOST=zabbix-server
+      - PHP_TZ=Europe/Moscow
+    expose:
+      - "8080"
+    # uncomment for local tests
+    # ports:
+    #     - "8080:8080"
 
-    zabbix-server:
-        image: zabbix/zabbix-server-mysql:latest
-        container_name: zabbix-server
-        hostname: zabbix-server
-        restart: always
-        depends_on:
-            - mysql-server
+  zabbix-server:
+    image: zabbix/zabbix-server-mysql:latest
+    container_name: zabbix-server
+    hostname: zabbix-server
+    restart: always
+    depends_on:
+      - mysql-server
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: private/environment/mysql.env
-        # hack to install additional packages before start of the container
-        entrypoint: /bin/bash -c
-        # I think there is a dedicated place in hell for people who do this kind of stuff
-        # in docker-compose instead of creating their own Dockerfile.
-        command: |
-            "apk add --update --no-cache openssl sudo coreutils openssl-dev && \
-            # xidel installation, including openssl-dev above \
-            mkdir -p /lib64 && \
-            ln -fs /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-            wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
-            | tar -xz xidel -C /bin && \
-            # end of xidel installation \
-            sudo -Eu zabbix \
-            /usr/bin/docker-entrypoint.sh \
-            /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
-        privileged: true
-        user: root # hack to add packages before the server start
-        volumes:
-            - ./config/zabbix/externalscripts:/usr/lib/zabbix/externalscripts
-        environment:
-            - TZ=UTC
-            - DB_SERVER_HOST=mysql-server
-            - ZBX_TIMEOUT=30
-        ports:
-            - "10051:10051"
+    # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+    env_file: private/environment/mysql.env
+    # hack to install additional packages before start of the container
+    entrypoint: /bin/bash -c
+    # I think there is a dedicated place in hell for people who do this kind of stuff
+    # in docker-compose instead of creating their own Dockerfile.
+    command: |
+      "apk add --update --no-cache openssl sudo coreutils openssl-dev && \
+      # xidel installation, including openssl-dev above \
+      mkdir -p /lib64 && \
+      ln -fs /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
+      wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
+      | tar -xz xidel -C /bin && \
+      # end of xidel installation \
+      sudo -Eu zabbix \
+      /usr/bin/docker-entrypoint.sh \
+      /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
+    privileged: true
+    user: root # hack to add packages before the server start
+    volumes:
+      - ./config/zabbix/externalscripts:/usr/lib/zabbix/externalscripts
+    environment:
+      - TZ=UTC
+      - DB_SERVER_HOST=mysql-server
+      - ZBX_TIMEOUT=30
+    ports:
+      - "10051:10051"
 
-    # In order for data collection from Zabbix Server to work,
-    # you'll need to go to host settings in Zabbix and change Agent
-    # interface from "IP 127.0.0.1" to "DNS Name zabbix-agent"
-    zabbix-agent:
-        image: zabbix/zabbix-agent2:latest
-        container_name: zabbix-agent
-        restart: always
-        privileged: true
+  # In order for data collection from Zabbix Server to work,
+  # you'll need to go to host settings in Zabbix and change Agent
+  # interface from "IP 127.0.0.1" to "DNS Name zabbix-agent"
+  zabbix-agent:
+    image: zabbix/zabbix-agent2:latest
+    container_name: zabbix-agent
+    restart: always
+    privileged: true
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        volumes:
-            # this is needed in order to monitor docker
-            # to make it work you need to create user "zabbix" with id 1997 on the host system,
-            # and make sure it has enough permissions to read /var/run/docker.sock
-            - /var/run/docker.sock:/var/run/docker.sock
+    volumes:
+      # this is needed in order to monitor docker
+      # to make it work you need to create user "zabbix" with id 1997 on the host system,
+      # and make sure it has enough permissions to read /var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock
 
-        environment:
-            - TZ=UTC
-            - ZBX_HOSTNAME=Zabbix server
-            - ZBX_SERVER_HOST=zabbix-server
+    environment:
+      - TZ=UTC
+      - ZBX_HOSTNAME=Zabbix server
+      - ZBX_SERVER_HOST=zabbix-server
 
-    mysql-server:
-        image: mysql:8.0
-        container_name: mysql-server
-        command:
-                - --character-set-server=utf8mb4
-                - --collation-server=utf8mb4_bin
-                - --default-authentication-plugin=mysql_native_password
-                - --innodb-monitor-enable=all
-                - --expire-logs-days=1
+  mysql-server:
+    image: mysql:8.0
+    container_name: mysql-server
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_bin
+      - --default-authentication-plugin=mysql_native_password
+      - --innodb-monitor-enable=all
+      - --expire-logs-days=1
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
-        env_file: private/environment/mysql.env
-        environment:
-            - TZ=UTC
-        expose:
-            - "3306"
-        # uncomment for local tests
-        # ports:
-        # - 3306:3306
-        volumes:
-            # Data persistence
-            - ./private/mysql-data:/var/lib/mysql
-        # fix for `mbind: Operation not permitted`
-        cap_add:
-            - SYS_NICE  # CAP_SYS_NICE
-        restart: always
+    # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+    env_file: private/environment/mysql.env
+    environment:
+      - TZ=UTC
+    expose:
+      - "3306"
+    # uncomment for local tests
+    # ports:
+    # - 3306:3306
+    volumes:
+      # Data persistence
+      - ./private/mysql-data:/var/lib/mysql
+    # fix for `mbind: Operation not permitted`
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    restart: always
 
-    softethervpn:
-        image: siomiz/softethervpn:alpine
-        hostname: softethervpn
-        restart: always
-        container_name: softethervpn
-        env_file: private/environment/softethervpn.env
+  softethervpn:
+    image: siomiz/softethervpn:alpine
+    hostname: softethervpn
+    restart: always
+    container_name: softethervpn
+    env_file: private/environment/softethervpn.env
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        ports:
-            # OpenVPN, unused
-            # - "1194:1194/udp"
-            - "500:500/udp"
-            - "4500:4500/udp"
-            - "1701:1701/tcp"
-            - "5555:5555/tcp"
-            - "992:992/tcp"
+    ports:
+      # OpenVPN, unused
+      # - "1194:1194/udp"
+      - "500:500/udp"
+      - "4500:4500/udp"
+      - "1701:1701/tcp"
+      - "5555:5555/tcp"
+      - "992:992/tcp"
 
-        cap_add:
-            - NET_ADMIN
+    cap_add:
+      - NET_ADMIN
 
-    socks_telegram:
-        image: dijedodol/simple-socks5-server:latest
-        hostname: socks_telegram
-        restart: always
-        container_name: socks_telegram
-        env_file: private/environment/socks_telegram.env
+  socks_telegram:
+    image: dijedodol/simple-socks5-server:latest
+    hostname: socks_telegram
+    restart: always
+    container_name: socks_telegram
+    env_file: private/environment/socks_telegram.env
 
-        environment:
-            - SSS_BIND=0.0.0.0:1088
+    environment:
+      - SSS_BIND=0.0.0.0:1088
 
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
-        ports:
-            - "1088:1088/tcp"
+    ports:
+      - "1088:1088/tcp"
 
-    plausible_db:
-        image: postgres:12
-        hostname: plausible_db
-        container_name: plausible_db
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-        volumes:
-            - db-data:/var/lib/postgresql/data
-        environment:
-            - POSTGRES_PASSWORD=postgres
+  plausible_db:
+    image: postgres:12
+    hostname: plausible_db
+    container_name: plausible_db
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
 
-    plausible_events_db:
-        image: yandex/clickhouse-server:21.3.2.5
-        hostname: plausible_events_db
-        container_name: plausible_events_db
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-        volumes:
-            - event-data:/var/lib/clickhouse
-            - ./config/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
-            - ./config/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
-        ulimits:
-            nofile:
-                soft: 262144
-                hard: 262144
+  plausible_events_db:
+    image: yandex/clickhouse-server:21.3.2.5
+    hostname: plausible_events_db
+    container_name: plausible_events_db
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - event-data:/var/lib/clickhouse
+      - ./config/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./config/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
 
-    geoip:
-      image: maxmindinc/geoipupdate
-      hostname: geoip
-      container_name: geoip
-      logging:
-        driver: json-file
-        options:
-          max-size: "10m"
-          max-file: "5"
-      environment:
-        - GEOIPUPDATE_EDITION_IDS=GeoLite2-Country
-        - GEOIPUPDATE_FREQUENCY=168 # update every 7 days
-      # GEOIPUPDATE_ACCOUNT_ID, GEOIPUPDATE_LICENSE_KEY
-      env_file: private/environment/geoip.env
-      volumes:
-        - geoip:/usr/share/GeoIP
+  geoip:
+    image: maxmindinc/geoipupdate
+    hostname: geoip
+    container_name: geoip
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    environment:
+      - GEOIPUPDATE_EDITION_IDS=GeoLite2-Country
+      - GEOIPUPDATE_FREQUENCY=168 # update every 7 days
+    # GEOIPUPDATE_ACCOUNT_ID, GEOIPUPDATE_LICENSE_KEY
+    env_file: private/environment/geoip.env
+    volumes:
+      - geoip:/usr/share/GeoIP
 
-    plausible:
-        image: plausible/analytics:latest
-        hostname: plausible
-        container_name: plausible
-        #command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
-        #command: /entrypoint.sh run
-        logging:
-            driver: json-file
-            options:
-                max-size: "10m"
-                max-file: "5"
-        depends_on:
-            - plausible_db
-            - plausible_events_db
-        expose:
-            - "8000"
-        environment:
-            - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
-              #- SMTP_HOST_ADDR=mailgun
-        volumes:
-            - geoip:/geoip:ro
-        # ADMIN_USER_EMAIL, ADMIN_USER_NAME, ADMIN_USER_PWD, BASE_URL, SECRET_KEY_BASE
-        env_file: private/environment/plausible.env
+  plausible:
+    image: plausible/analytics:latest
+    hostname: plausible
+    container_name: plausible
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    depends_on:
+      - plausible_db
+      - plausible_events_db
+    expose:
+      - "8000"
+    environment:
+      - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
+    volumes:
+      - geoip:/geoip:ro
+    # ADMIN_USER_EMAIL, ADMIN_USER_NAME, ADMIN_USER_PWD, BASE_URL, SECRET_KEY_BASE
+    env_file: private/environment/plausible.env
 
 volumes:
-    db-data:
-        driver: local
-    event-data:
-        driver: local
-    geoip:
-        driver: local
+  db-data:
+    driver: local
+  event-data:
+    driver: local
+  geoip:
+    driver: local
