@@ -152,7 +152,9 @@ services:
     volumes:
       # this is needed in order to monitor docker
       # to make it work you need to create user "zabbix" with id 1997 on the host system,
-      # and make sure it has enough permissions to read /var/run/docker.sock
+      # and make sure it has enough permissions to read /var/run/docker.sock.
+      # For Ubuntu:
+      # setfacl --modify user:zabbix:rw /var/run/docker.sock
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
@@ -241,6 +243,7 @@ services:
     image: postgres:12
     hostname: plausible_db
     container_name: plausible_db
+    restart: always
     logging:
       driver: json-file
       options:
@@ -255,6 +258,7 @@ services:
     image: yandex/clickhouse-server:21.3.2.5
     hostname: plausible_events_db
     container_name: plausible_events_db
+    restart: always
     logging:
       driver: json-file
       options:
@@ -290,6 +294,7 @@ services:
     image: plausible/analytics:latest
     hostname: plausible
     container_name: plausible
+    restart: always
     logging:
       driver: json-file
       options:
