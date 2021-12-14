@@ -160,10 +160,10 @@ services:
       - ZBX_SERVER_HOST=zabbix-server
 
   mysql-server:
-    image: mysql:8.0
-    platform: linux/amd64
+    image: jamielsharief/mysql:latest
     container_name: mysql-server
     command:
+      - mysqld
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_bin
       - --default-authentication-plugin=mysql_native_password
@@ -240,7 +240,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   plausible_events_db:
-    image: yandex/clickhouse-server:21.3.2.5
+    image: lunalabsltd/clickhouse-server:21.7.2.7-arm
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
