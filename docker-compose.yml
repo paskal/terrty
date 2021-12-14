@@ -139,6 +139,7 @@ services:
     container_name: zabbix-agent
     restart: always
     privileged: true
+    user: root
 
     logging:
       driver: json-file
