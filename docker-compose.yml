@@ -218,6 +218,12 @@ services:
     cap_add:
       - NET_ADMIN
 
+    volumes:
+      # Don't store any logs
+      - /dev/null:/usr/vpnserver/server_log
+      - /dev/null:/usr/vpnserver/packet_log
+      - /dev/null:/usr/vpnserver/security_log
+
   socks_telegram:
     image: dijedodol/simple-socks5-server:latest
     hostname: socks_telegram
