@@ -117,12 +117,9 @@ services:
       # xidel installation, including openssl-dev above \
       mkdir -p /lib64 && \
       ln -fs /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-      wget -qO- https://downloads.sourceforge.net/project/videlibri/Xidel/Xidel%200.9.8/xidel-0.9.8.linux64.tar.gz \
-      | tar -xz xidel -C /bin && \
+      wget -qO- https://github.com/benibela/xidel/releases/download/Xidel_0.9.8/xidel-0.9.8.linux64.tar.gz | tar -xz xidel -C /bin && \
       # end of xidel installation \
-      sudo -Eu zabbix \
-      /usr/bin/docker-entrypoint.sh \
-      /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
+      sudo -Eu zabbix /usr/bin/docker-entrypoint.sh /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
     privileged: true
     user: root # hack to add packages before the server start
     volumes:
