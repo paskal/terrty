@@ -161,6 +161,7 @@ services:
 
   mysql-server:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: mysql-server
     command:
       - --character-set-server=utf8mb4
