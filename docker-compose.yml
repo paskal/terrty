@@ -113,8 +113,10 @@ services:
     # I think there is a dedicated place in hell for people who do this kind of stuff
     # in docker-compose instead of creating their own Dockerfile.
     command: |
-      "apk add --update --no-cache sudo libxml2-utils && \
-      # libxml2-utils brings xmllint \
+      "apk add --update --no-cache sudo libxml2-utils openssl coreutils && \
+      # libxml2-utils brings xmllint for sitemap_check.sh \
+      # openssl is required for ssl_cert_check.sh \
+      # coreutils brings date for ssl_cert_check.sh \
       sudo -Eu zabbix /usr/bin/docker-entrypoint.sh /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
     privileged: true
     user: root # hack to add packages before the server start
