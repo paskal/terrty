@@ -12,7 +12,7 @@ if [ -z "$url" ]; then
 fi
 
 # retrieve lastmod from sitemap.xml
-lines=$(curl -s "$url" | xmllint --xpath "//*[local-name()='lastmod']/text()" -)
+lines=$(wget -qO- "$url" | xmllint --xpath "//*[local-name()='lastmod']/text()" -)
 
 # check that we have any lines to check
 if [ -z "$lines" ]; then

@@ -93,7 +93,8 @@ services:
     #     - "8080:8080"
 
   zabbix-server:
-    image: zabbix/zabbix-server-mysql:latest
+    build: config/zabbix
+    image: paskal/zabbix-server-mysql:latest
     container_name: zabbix-server
     hostname: zabbix-server
     restart: always
@@ -108,19 +109,6 @@ services:
 
     # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
     env_file: private/environment/mysql.env
-    # hack to install additional packages before start of the container
-    entrypoint: /bin/bash -c
-    # I think there is a dedicated place in hell for people who do this kind of stuff
-    # in docker-compose instead of creating their own Dockerfile.
-    command: |
-      "apk add --update --no-cache sudo curl libxml2-utils openssl coreutils && \
-      # libxml2-utils brings xmllint for sitemap_check.sh \
-      # curl is required for sitemap_check.sh \
-      # openssl is required for ssl_cert_check.sh \
-      # coreutils brings date for ssl_cert_check.sh \
-      sudo -Eu zabbix /usr/bin/docker-entrypoint.sh /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
-    privileged: true
-    user: root # hack to add packages before the server start
     volumes:
       - ./config/zabbix/externalscripts:/usr/lib/zabbix/externalscripts
     environment:
