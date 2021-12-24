@@ -113,12 +113,8 @@ services:
     # I think there is a dedicated place in hell for people who do this kind of stuff
     # in docker-compose instead of creating their own Dockerfile.
     command: |
-      "apk add --update --no-cache openssl sudo coreutils openssl-dev && \
-      # xidel installation, including openssl-dev above \
-      mkdir -p /lib64 && \
-      ln -fs /lib/ld-musl-aarch64.so.1 /lib64/ld-linux-aarch64.so.2 && \
-      wget -qO- https://github.com/benibela/xidel/releases/download/Xidel_0.9.8/xidel-0.9.8.androidarm.tar.gz | tar -xz xidel -C /bin && \
-      # end of xidel installation \
+      "apk add --update --no-cache sudo libxml2-utils && \
+      # libxml2-utils brings xmllint \
       sudo -Eu zabbix /usr/bin/docker-entrypoint.sh /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
     privileged: true
     user: root # hack to add packages before the server start
