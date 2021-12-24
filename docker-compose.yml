@@ -1,7 +1,7 @@
 version: '2'
 services:
   nginx:
-    image: umputun/nginx-le:latest
+    image: umputun/nginx-le:master
     hostname: nginx
     restart: always
     container_name: nginx
@@ -113,8 +113,9 @@ services:
     # I think there is a dedicated place in hell for people who do this kind of stuff
     # in docker-compose instead of creating their own Dockerfile.
     command: |
-      "apk add --update --no-cache sudo libxml2-utils openssl coreutils && \
+      "apk add --update --no-cache sudo curl libxml2-utils openssl coreutils && \
       # libxml2-utils brings xmllint for sitemap_check.sh \
+      # curl is required for sitemap_check.sh \
       # openssl is required for ssl_cert_check.sh \
       # coreutils brings date for ssl_cert_check.sh \
       sudo -Eu zabbix /usr/bin/docker-entrypoint.sh /usr/sbin/zabbix_server --foreground -c /etc/zabbix/zabbix_server.conf"
@@ -271,7 +272,7 @@ services:
       - geoip:/usr/share/GeoIP
 
   plausible:
-    image: plausible/analytics:latest
+    image: plausible/analytics:arm-manual-build
     hostname: plausible
     container_name: plausible
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
