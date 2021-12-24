@@ -21,7 +21,7 @@ if [ -z "$lines" ]; then
 fi
 
 # check dates in files and get oldest one in unix time (seconds) format
-newest_renewal=$(echo "$lines" | tr ' ' '\0' | xargs -I{} -0 date -d '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | tail -1)
+newest_renewal=$(echo "$lines" | tr ' ' '\0' | xargs -I{} -0 date -D '%Y-%m-%dT%H:%M:%S' +%s -d {} | sort | tail -1)
 
 # get age in complete days for newest lastmod entry
 updated_days_ago=$((($(date +%s) - $newest_renewal) / (60 * 60 * 24)))
