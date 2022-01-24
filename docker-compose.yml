@@ -224,7 +224,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   plausible_events_db:
-    image: lunalabsltd/clickhouse-server:21.7.2.7-arm
+    image: altinity/clickhouse-server:21.12.3.32.altinitydev.arm
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
