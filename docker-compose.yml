@@ -35,7 +35,7 @@ services:
       - TZ=UTC
       - LETSENCRYPT=true
       - LE_EMAIL=paskal.07@gmail.com
-      - LE_FQDN=terrty.net,ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net
+      - LE_FQDN=terrty.net,ksinia.net,www.terrty.net,www.ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net
 
   grafana:
     image: grafana/grafana
@@ -177,36 +177,36 @@ services:
       - SYS_NICE  # CAP_SYS_NICE
     restart: always
 
-  softethervpn:
-    image: siomiz/softethervpn:alpine
-    hostname: softethervpn
-    restart: always
-    container_name: softethervpn
-    env_file: private/environment/softethervpn.env
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-
-    ports:
-      # OpenVPN, unused
-      # - "1194:1194/udp"
-      - "500:500/udp"
-      - "4500:4500/udp"
-      - "1701:1701/tcp"
-      - "5555:5555/tcp"
-      - "992:992/tcp"
-
-    cap_add:
-      - NET_ADMIN
-
-    volumes:
-      # Don't store any logs
-      - /dev/null:/usr/vpnserver/server_log
-      - /dev/null:/usr/vpnserver/packet_log
-      - /dev/null:/usr/vpnserver/security_log
+#  softethervpn:
+#    image: siomiz/softethervpn:alpine
+#    hostname: softethervpn
+#    restart: always
+#    container_name: softethervpn
+#    env_file: private/environment/softethervpn.env
+#
+#    logging:
+#      driver: json-file
+#      options:
+#        max-size: "10m"
+#        max-file: "5"
+#
+#    ports:
+#      # OpenVPN, unused
+#      # - "1194:1194/udp"
+#      - "500:500/udp"
+#      - "4500:4500/udp"
+#      - "1701:1701/tcp"
+#      - "5555:5555/tcp"
+#      - "992:992/tcp"
+#
+#    cap_add:
+#      - NET_ADMIN
+#
+#    volumes:
+#      # Don't store any logs
+#      - /dev/null:/usr/vpnserver/server_log
+#      - /dev/null:/usr/vpnserver/packet_log
+#      - /dev/null:/usr/vpnserver/security_log
 
   plausible_db:
     image: postgres:12
