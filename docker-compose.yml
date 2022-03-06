@@ -246,6 +246,7 @@ services:
     image: maxmindinc/geoipupdate
     hostname: geoip
     container_name: geoip
+    restart: always
     logging:
       driver: json-file
       options:
