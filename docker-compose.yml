@@ -37,7 +37,7 @@ services:
       - LE_EMAIL=paskal.07@gmail.com
       - LE_FQDN=terrty.net,ksinia.net,www.terrty.net,www.ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net,remark42.terrty.net
 
-  remark:
+  remark42:
     image: umputun/remark42:master
     container_name: "remark42"
     hostname: "remark42"
@@ -48,6 +48,9 @@ services:
       options:
         max-size: "10m"
         max-file: "5"
+
+    expose:
+      - "8080"
 
     # many variables
     env_file: private/environment/remark42.env
