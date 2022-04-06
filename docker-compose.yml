@@ -57,7 +57,7 @@ services:
 
     environment:
       - REMARK_URL=https://remark42.terrty.net
-      - SITE_ID=terrty
+      - SITE=terrty
     volumes:
       - ./private/remark42-data:/srv/var
 
