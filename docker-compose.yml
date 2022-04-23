@@ -248,7 +248,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   plausible_events_db:
-    image: altinity/clickhouse-server:21.12.3.32.altinitydev.arm
+    image: clickhouse/clickhouse-server:22.4.2.1-alpine
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
@@ -259,8 +259,9 @@ services:
         max-file: "5"
     volumes:
       - event-data:/var/lib/clickhouse
-      - ./config/clickhouse/clickhouse-config.xml:/etc/clickhouse-server/config.d/logging.xml:ro
-      - ./config/clickhouse/clickhouse-user-config.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+      - ./config/clickhouse/server-logging.xml:/etc/clickhouse-server/config.d/logging.xml:ro
+      - ./config/clickhouse/user-logging.xml:/etc/clickhouse-server/users.d/logging.xml:ro
+      - ./config/clickhouse/clickhouse-issue-15638.xml:/etc/clickhouse-server/config.d/clickhouse-issue-15638.xml:ro
     ulimits:
       nofile:
         soft: 262144
