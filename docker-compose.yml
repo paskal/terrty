@@ -342,11 +342,11 @@ services:
     env_file: private/environment/updater.env
     environment:
       - LISTEN=0.0.0.0:8080
-      - CONF=/srv/etc/updater.yml
+      - CONF=/etc/updater.yml
     ports:
       - "8080"
     volumes:
-      - ./config/updater.yaml:/srv/etc/updater.yml
+      - ./config/updater.yaml:/etc/updater.yml
 
 volumes:
   db-data:
