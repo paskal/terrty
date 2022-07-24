@@ -346,7 +346,7 @@ services:
     ports:
       - "8080"
     volumes:
-      - config/updater.yaml:/srv/etc/updater.yml
+      - ./config/updater.yaml:/srv/etc/updater.yml
 
 volumes:
   db-data:
