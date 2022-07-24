@@ -1,0 +1,5 @@
+tasks:
+  - name: zabbix
+    command: |
+      echo "update Zabbix after server rebuild"
+      ssh updater@terrty.net "cd /home/opc/terrty && docker compose pull zabbix-server zabbix-web zabbix-agent &&  docker compose up -d zabbix-server zabbix-web zabbix-agent"

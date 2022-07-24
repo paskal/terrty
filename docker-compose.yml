@@ -328,6 +328,26 @@ services:
 
     restart: unless-stopped
 
+  updater:
+    image: ghcr.io/umputun/updater:master
+    container_name: updater
+    hostname: updater
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # KEY variable
+    env_file: private/environment/updater.env
+    environment:
+      - LISTEN=0.0.0.0:8080
+      - CONF=/srv/etc/updater.yml
+    ports:
+      - "8080"
+    volumes:
+      - config/updater.yaml:/srv/etc/updater.yml
+
 volumes:
   db-data:
     driver: local
