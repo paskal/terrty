@@ -1,7 +1,7 @@
 FROM zabbix/zabbix-server-mysql:latest
 
-LABEL name=paskal/zabbix-server-mysql
-LABEL maintainer="paskal.07@gmail.com"
+LABEL org.opencontainers.image.authors="Dmitry Verkhoturov <paskal.07@gmail.com>" \
+      org.opencontainers.image.description="Zabbix Server with limxml2-utils, openssl and coreutils"
 
 # root to allow installation of the packages
 USER 0
