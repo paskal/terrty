@@ -347,6 +347,7 @@ services:
       - "8080"
     volumes:
       - ./config/updater.yaml:/etc/updater.yml
+      - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
 
 volumes:
   db-data:
