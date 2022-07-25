@@ -2,4 +2,20 @@ tasks:
   - name: zabbix
     command: |
       echo "update Zabbix after server rebuild"
-      ssh app@terrty.net "cd /home/opc/terrty && docker compose pull zabbix-server zabbix-web zabbix-agent &&  docker compose up -d zabbix-server zabbix-web zabbix-agent"
+      ssh opc@terrty.net "cd /home/opc/terrty && docker compose pull zabbix-server zabbix-web zabbix-agent &&  docker compose up -d zabbix-server zabbix-web zabbix-agent"
+  - name: ksinia-cv
+    command: |
+      echo "update ksinia.net/cv/"
+      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/terrty/private/ksinia && git pull --ff-only && docker compose run build"
+  - name: terrty-cv
+    command: |
+      echo "update terrty.net/cv/"
+      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/resume && git pull --ff-only && docker compose run build"
+  - name: publish-blog
+    command: |
+      echo "update terrty.net/cv/"
+      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/blog && git pull --ff-only && docker compose run build"
+  - name: pull-code
+    command: |
+      echo "update terrty.net/cv/"
+      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/terrty && git pull --ff-only"
