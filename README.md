@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/paskal/terrty/workflows/build/badge.svg)](https://github.com/paskal/terrty/actions/workflows/ci-build.yml)
+[![Build Status](https://github.com/paskal/terrty/workflows/build/badge.svg)](https://github.com/paskal/terrty/actions/workflows/ci-build.yml) [![Pull Status](https://github.com/paskal/terrty/workflows/pull/badge.svg)](https://github.com/paskal/terrty/actions/workflows/ci-pull.yml)
 
 Source code for different (mostly, monitoring) services running on <https://terrty.net> which is primarily my blog.
 
