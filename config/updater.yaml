@@ -13,9 +13,9 @@ tasks:
       eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/resume && git pull --ff-only && docker compose run build"
   - name: publish-blog
     command: |
-      echo "update terrty.net/cv/"
+      echo "update terrty.net (blog)"
       eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/blog && git pull --ff-only && docker compose run build"
   - name: pull-code
     command: |
-      echo "update terrty.net/cv/"
+      echo "update code used for terrty.net"
       eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/terrty && git pull --ff-only"
