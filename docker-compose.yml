@@ -10,7 +10,7 @@ services:
       - zabbix-web
       - plausible
       - adminer
-      - webhook
+      - updater
 
     logging:
       driver: json-file
@@ -314,7 +314,7 @@ services:
     hostname: adminer
     container_name: adminer
     depends_on:
-      - mysql
+      - mysql-server
     expose:
       - "8080"
     environment:
