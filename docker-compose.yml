@@ -37,7 +37,7 @@ services:
       - TZ=UTC
       - LETSENCRYPT=true
       - LE_EMAIL=paskal.07@gmail.com
-      - LE_FQDN=terrty.net,terrty.com,terrty.dev,paskal.dev,pask.al,ksinia.net,ksinia.com,www.terrty.net,www.ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net,remark42.terrty.net,adminer.terrty.net,hooks.terrty.net
+      - LE_FQDN=terrty.net,terrty.com,terrty.dev,paskal.dev,pask.al,ksinia.net,ksinia.com,ksinia.dev,www.terrty.net,www.ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net,remark42.terrty.net,adminer.terrty.net,hooks.terrty.net
 
   remark42:
     image: umputun/remark42:master
