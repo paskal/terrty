@@ -235,7 +235,7 @@ services:
 #      - /dev/null:/usr/vpnserver/security_log
 
   plausible_db:
-    image: postgres:12
+    image: postgres:14-alpine
     hostname: plausible_db
     container_name: plausible_db
     restart: always
@@ -250,7 +250,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   plausible_events_db:
-    image: clickhouse/clickhouse-server:22.4.2.1-alpine
+    image: clickhouse/clickhouse-server:22.6-alpine
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
