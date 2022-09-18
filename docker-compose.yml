@@ -1,5 +1,28 @@
 version: '2'
 services:
+  le-dns-updater:
+    image: umputun/le-dns-updater:master
+    container_name: le-dns-updater
+    hostname: le-dns-updater
+    restart: always
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - ./private/le-dns-updater:/srv/var
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # See https://github.com/go-acme/lego#dns-providers for details
+    # DO_AUTH_TOKEN
+    env_file: private/environment/le-dns-updater.env
+    command:
+      - paskal.07@gmail.com  # email
+      - digitalocean         # provider
+      - "terrty.net *.terrty.net terrty.com *.terrty.com terrty.dev *.terrty.dev paskal.dev *.paskal.dev pask.al *.pask.al ksinia.net *.ksinia.net ksinia.com *.ksinia.com ksinia.dev *.ksinia.dev" # domains
+      - "docker restart nginx"
+
   nginx:
     image: umputun/nginx-le:master
     hostname: nginx
@@ -28,6 +51,7 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d-le
       # nginx ssl certificate to prevent renewal on each restart
       - ./private/ssl:/etc/nginx/ssl
+      - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
 
     ports:
       - "80:80"
@@ -35,9 +59,9 @@ services:
 
     environment:
       - TZ=UTC
-      - LETSENCRYPT=true
       - LE_EMAIL=paskal.07@gmail.com
-      - LE_FQDN=terrty.net,terrty.com,terrty.dev,paskal.dev,pask.al,ksinia.net,ksinia.com,ksinia.dev,www.terrty.net,www.ksinia.net,grafana.terrty.net,zabbix.terrty.net,stats.terrty.net,remark42.terrty.net,adminer.terrty.net,hooks.terrty.net
+#      - LETSENCRYPT=true
+#      - LE_FQDN=theatrestudio.ru
 
   remark42:
     image: umputun/remark42:master
