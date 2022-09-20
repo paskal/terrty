@@ -46,11 +46,11 @@ services:
       - ../blog/public:/usr/share/nginx/html
       # ksinia.net source code
       - ./private/ksinia/public/:/usr/share/nginx/html2
+      # common files
       - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
       - ./config/nginx/static.conf:/etc/nginx/static.conf
       - ./config/nginx/conf.d:/etc/nginx/conf.d-le
-      # nginx ssl certificate to prevent renewal on each restart
-      - ./private/ssl:/etc/nginx/ssl
+      # certificate folder from le-dns-updater
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
 
     ports:
@@ -59,9 +59,6 @@ services:
 
     environment:
       - TZ=UTC
-      - LE_EMAIL=paskal.07@gmail.com
-#      - LETSENCRYPT=true
-#      - LE_FQDN=theatrestudio.ru
 
   remark42:
     image: umputun/remark42:master
