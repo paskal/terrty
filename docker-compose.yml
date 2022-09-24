@@ -52,6 +52,7 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d-le
       # certificate folder from le-dns-updater
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
+      - ./private/ssl:/etc/nginx/ssl
 
     ports:
       - "80:80"
@@ -327,6 +328,8 @@ services:
       - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
     volumes:
       - geoip:/geoip:ro
+      # robots.txt
+      - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
     # ADMIN_USER_EMAIL, ADMIN_USER_NAME, ADMIN_USER_PWD, BASE_URL, SECRET_KEY_BASE
     env_file: private/environment/plausible.env
 
