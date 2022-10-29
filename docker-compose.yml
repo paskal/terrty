@@ -309,7 +309,7 @@ services:
       - geoip:/usr/share/GeoIP
 
   plausible:
-    image: plausible/analytics:arm-manual-build
+    image: plausible/analytics:1.5.0-rc.0
     hostname: plausible
     container_name: plausible
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
