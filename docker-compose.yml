@@ -309,10 +309,10 @@ services:
       - geoip:/usr/share/GeoIP
 
   plausible:
-    image: plausible/analytics:1.5.0-rc.0
+    image: plausible/analytics:v1.5.0-rc.1
     hostname: plausible
     container_name: plausible
-    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh db init-admin && /entrypoint.sh run"
+    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     restart: always
     logging:
       driver: json-file
@@ -330,7 +330,7 @@ services:
       - geoip:/geoip:ro
       # robots.txt
       - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
-    # ADMIN_USER_EMAIL, ADMIN_USER_NAME, ADMIN_USER_PWD, BASE_URL, SECRET_KEY_BASE
+    # BASE_URL, SECRET_KEY_BASE
     env_file: private/environment/plausible.env
 
   adminer:
