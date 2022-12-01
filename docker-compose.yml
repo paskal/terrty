@@ -328,10 +328,12 @@ services:
       - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
     volumes:
       - geoip:/geoip:ro
-      # robots.txt
+      # robots.txt restricting everything
       - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
-    # BASE_URL, SECRET_KEY_BASE
+    # SECRET_KEY_BASE
     env_file: private/environment/plausible.env
+    environment:
+      - BASE_URL=https://stats.terrty.net
 
   adminer:
     image: adminer
