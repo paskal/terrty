@@ -9,7 +9,7 @@ function show_help() {
 	# if running on terminal, show error
 	# without terminal(from zabbix) this will create an unsupported item because return value is stdout + stderr
 	if [ -t 1 ]; then
-	cat >&2 << EOF
+		cat >&2 <<EOF
 
 Usage: $(basename "$0") expire|valid hostname|ip [port[/starttls protocol]] [domain for TLS SNI] [check_timeout]
 
@@ -42,10 +42,16 @@ EOF
 
 }
 
-function error() { echo $error_code; if [ -t 1 ]; then echo "ERROR: $*" >&2; fi; exit 0; }
+function error() {
+	echo $error_code
+	if [ -t 1 ]; then echo "ERROR: $*" >&2; fi
+	exit 0
+}
 
-function result() { echo "$1"; exit 0; }
-
+function result() {
+	echo "$1"
+	exit 0
+}
 
 # Arguments
 check_type="$1"
@@ -57,7 +63,7 @@ check_timeout="${5:-$default_check_timeout}"
 starttls=""
 starttls_proto=""
 
-IFS='/' read -a split <<< $port
+IFS='/' read -a split <<<$port
 
 if [ ${#split[@]} -gt 1 ]; then
 	port="${split[0]}"
@@ -88,24 +94,23 @@ fi
 [[ "$check_timeout" =~ ^[0-9]+$ ]] || error "Check timeout should be a number"
 
 # Get certificate
-if ! output=$( echo \
-| timeout "$check_timeout" openssl s_client $starttls $starttls_proto -servername "$domain" -verify_hostname "$domain" -connect "$host":"$port" 2>/dev/null )
-then
+if ! output=$(echo |
+	timeout "$check_timeout" openssl s_client $starttls $starttls_proto -servername "$domain" -verify_hostname "$domain" -connect "$host":"$port" 2>/dev/null); then
 	error "Failed to get certificate"
 fi
 
 # Run checks
 if [ "$check_type" = "expire" ]; then
-	expire_date=$( echo "$output" \
-	| openssl x509 -noout -dates \
-	| grep '^notAfter' | cut -d'=' -f2 )
+	expire_date=$(echo "$output" |
+		openssl x509 -noout -dates |
+		grep '^notAfter' | cut -d'=' -f2)
 
 	expire_date_epoch=$(date -d "$expire_date" +%s) || error "Failed to get expire date"
 	current_date_epoch=$(date +%s)
-	days_left=$(( (expire_date_epoch - current_date_epoch)/(3600*24) ))
+	days_left=$(((expire_date_epoch - current_date_epoch) / (3600 * 24)))
 	result "$days_left"
 elif [ "$check_type" = "valid" ]; then
 	# Note: new openssl versions can print multiple return codes for post-handshake session tickets, so we need to get only the first one
-	verify_return_code=$( echo "$output" | grep -E '^ *Verify return code:' | sed -n 1p | sed 's/^ *//' | tr -s ' ' | cut -d' ' -f4 )
+	verify_return_code=$(echo "$output" | grep -E '^ *Verify return code:' | sed -n 1p | sed 's/^ *//' | tr -s ' ' | cut -d' ' -f4)
 	if [ "$verify_return_code" -eq "0" ]; then result 1; else result 0; fi
 fi

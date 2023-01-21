@@ -4,11 +4,11 @@
 url=$1
 
 if [ -z "$url" ]; then
-  echo "This script checks newest sitemap entry from URL given as an argument"
-  echo "and gives non-zero exit code in case of problems."
-  echo "Please set URL for check as first argument for the script, for example:"
-  echo "$0 https://favor-group.ru/sitemap.xml"
-  exit 2
+	echo "This script checks newest sitemap entry from URL given as an argument"
+	echo "and gives non-zero exit code in case of problems."
+	echo "Please set URL for check as first argument for the script, for example:"
+	echo "$0 https://favor-group.ru/sitemap.xml"
+	exit 2
 fi
 
 # retrieve lastmod from sitemap.xml
@@ -16,8 +16,8 @@ lines=$(wget -qO- "$url" | xmllint --xpath "//*[local-name()='lastmod']/text()" 
 
 # check that we have any lines to check
 if [ -z "$lines" ]; then
-  echo "Haven't found lastmod entries in sitemap by URL $url"
-  exit 101
+	echo "Haven't found lastmod entries in sitemap by URL $url"
+	exit 101
 fi
 
 # check dates in files and get oldest one in unix time (seconds) format
