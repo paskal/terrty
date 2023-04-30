@@ -325,6 +325,7 @@ services:
     expose:
       - "8000"
     environment:
+      - BASE_URL=https://stats.terrty.net
       - GEOLITE2_COUNTRY_DB=/geoip/GeoLite2-Country.mmdb
     volumes:
       - geoip:/geoip:ro
@@ -332,8 +333,6 @@ services:
       - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
     # SECRET_KEY_BASE
     env_file: private/environment/plausible.env
-    environment:
-      - BASE_URL=https://stats.terrty.net
 
   adminer:
     image: adminer
