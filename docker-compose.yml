@@ -118,7 +118,6 @@ services:
     hostname: zabbix-web
     restart: always
     depends_on:
-      - mysql-server
       - zabbix-server
 
     logging:
@@ -131,7 +130,8 @@ services:
     env_file: private/environment/mysql.env
     environment:
       - TZ=UTC
-      - DB_SERVER_HOST=mysql-server
+      - DB_SERVER_HOST=localhost
+      - DB_SERVER_SOCKET=/var/run/mysqld/mysqld.sock
       - ZBX_SERVER_HOST=zabbix-server
       - PHP_TZ=Europe/Moscow
     expose:
@@ -139,6 +139,9 @@ services:
     # uncomment for local tests
     # ports:
     #     - "8080:8080"
+    volumes:
+      # MySQL socket to prevent transferring data through TCP
+      - ./private/mysqld:/var/run/mysqld
 
   zabbix-server:
     build: config/zabbix
@@ -146,8 +149,6 @@ services:
     container_name: zabbix-server
     hostname: zabbix-server
     restart: always
-    depends_on:
-      - mysql-server
 
     logging:
       driver: json-file
@@ -159,9 +160,12 @@ services:
     env_file: private/environment/mysql.env
     volumes:
       - ./config/zabbix/externalscripts:/usr/lib/zabbix/externalscripts
+      # MySQL socket to prevent transferring data through TCP
+      - ./private/mysqld:/var/run/mysqld
     environment:
       - TZ=UTC
-      - DB_SERVER_HOST=mysql-server
+      - DB_SERVER_HOST=localhost
+      - DB_SERVER_SOCKET=/var/run/mysqld/mysqld.sock
       - ZBX_TIMEOUT=30
     ports:
       - "10051:10051"
@@ -191,16 +195,15 @@ services:
       - ZBX_HOSTNAME=Zabbix server
       - ZBX_SERVER_HOST=zabbix-server
 
-  mysql-server:
+  mysql:
     image: jamielsharief/mysql:latest
-    container_name: mysql-server
+    container_name: mysql
     command:
       - mysqld
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_bin
-      - --default-authentication-plugin=mysql_native_password
       - --innodb-monitor-enable=all
-      - --expire-logs-days=1
+      - --skip-mysqlx
 
     logging:
       driver: json-file
@@ -220,6 +223,8 @@ services:
     volumes:
       # Data persistence
       - ./private/mysql-data:/var/lib/mysql
+      # MySQL socket to prevent transferring data through TCP
+      - ./private/mysqld:/var/run/mysqld
     # fix for `mbind: Operation not permitted`
     cap_add:
       - SYS_NICE  # CAP_SYS_NICE
@@ -338,12 +343,13 @@ services:
     image: adminer
     hostname: adminer
     container_name: adminer
-    depends_on:
-      - mysql-server
     expose:
       - "8080"
     environment:
-      ADMINER_DEFAULT_SERVER: mysql-server
+      ADMINER_DEFAULT_SERVER: localhost
+    volumes:
+      # MySQL socket to prevent transferring data through TCP
+      - ./private/mysqld:/var/run/mysqld
 
     logging:
       driver: json-file
