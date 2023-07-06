@@ -164,7 +164,6 @@ services:
       - ./private/mysqld:/var/run/mysqld
     environment:
       - TZ=UTC
-      - DB_SERVER_HOST=localhost
       - DB_SERVER_SOCKET=/var/run/mysqld/mysqld.sock
       - ZBX_TIMEOUT=30
     ports:
