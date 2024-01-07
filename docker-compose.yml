@@ -57,6 +57,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+      - "443:443/udp"
 
     environment:
       - TZ=UTC
@@ -352,7 +353,7 @@ services:
     environment:
       - LISTEN=0.0.0.0:8080
       - CONF=/etc/updater.yml
-    ports:
+    expose:
       - "8080"
     volumes:
       - ./config/updater.yaml:/etc/updater.yml
