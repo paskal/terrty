@@ -359,6 +359,25 @@ services:
       - ./config/updater.yaml:/etc/updater.yml
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
 
+  wgeasy:
+    image: ghcr.io/wg-easy/wg-easy:8
+    network_mode: "bridge"
+    container_name: wgeasy
+    ports:
+      - "51820:51820/udp"
+      - "51821:51821"
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+      - net.ipv4.ip_forward=1
+    volumes:
+      - ./private/wgeasy:/etc/wireguard
+    # WG_HOST, PASSWORD variable
+    env_file: private/environment/wgeasy.env
+    restart: always
+
 volumes:
   db-data:
     driver: local
