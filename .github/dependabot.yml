@@ -13,7 +13,3 @@ updates:
       "GitHub Actions updates":
         patterns:
           - "*"
-  - package-ecosystem: "docker"
-    directory: "/config/zabbix"
-    schedule:
-      interval: "monthly"
