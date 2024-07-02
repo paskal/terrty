@@ -1,7 +1,7 @@
 version: '2'
 services:
   le-dns-updater:
-    image: umputun/le-dns-updater:master
+    image: ghcr.io/umputun/le-dns-updater:master
     container_name: le-dns-updater
     hostname: le-dns-updater
     restart: always
@@ -63,7 +63,7 @@ services:
       - TZ=UTC
 
   remark42:
-    image: umputun/remark42:master
+    image: ghcr.io/umputun/remark42:master
     container_name: "remark42"
     hostname: "remark42"
     restart: always
@@ -145,7 +145,7 @@ services:
 
   zabbix-server:
     build: config/zabbix
-    image: paskal/zabbix-server-mysql:latest
+    image: ghcr.io/paskal/zabbix-server-mysql:latest
     container_name: zabbix-server
     hostname: zabbix-server
     restart: always
