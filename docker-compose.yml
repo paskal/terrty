@@ -1,4 +1,3 @@
-version: '2'
 services:
   le-dns-updater:
     image: ghcr.io/umputun/le-dns-updater:master
