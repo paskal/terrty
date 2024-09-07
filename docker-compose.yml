@@ -244,7 +244,7 @@ services:
       - POSTGRES_PASSWORD=postgres
 
   plausible_events_db:
-    image: clickhouse/clickhouse-server:22.6-alpine
+    image: clickhouse/clickhouse-server:24.3.3.102-alpine
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
@@ -263,7 +263,7 @@ services:
         hard: 262144
 
   plausible:
-    image: plausible/analytics:v2
+    image: ghcr.io/plausible/community-edition:v2.1.1
     hostname: plausible
     container_name: plausible
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
@@ -283,7 +283,7 @@ services:
     volumes:
       # robots.txt restricting indexing anything on the stats website
       - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
-    # SECRET_KEY_BASE, many other variables
+    # SECRET_KEY_BASE, TOTP_VAULT_KEY, many other variables
     env_file: private/environment/plausible.env
 
   adminer:
