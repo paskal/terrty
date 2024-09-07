@@ -15,3 +15,7 @@ sudo firewall-cmd --zone=public --add-port=51820/udp --permanent
 sudo firewall-cmd --zone=public --add-port=51821/tcp --permanent
 sudo firewall-cmd --reload
 ```
+
+### VPN Servers
+
+Example of VPN servers setup is in the separate file, `docker-compose-vpn.yml`.

@@ -228,37 +228,6 @@ services:
       - SYS_NICE  # CAP_SYS_NICE
     restart: always
 
-#  softethervpn:
-#    image: siomiz/softethervpn:alpine
-#    hostname: softethervpn
-#    restart: always
-#    container_name: softethervpn
-#    env_file: private/environment/softethervpn.env
-#
-#    logging:
-#      driver: json-file
-#      options:
-#        max-size: "10m"
-#        max-file: "5"
-#
-#    ports:
-#      # OpenVPN, unused
-#      # - "1194:1194/udp"
-#      - "500:500/udp"
-#      - "4500:4500/udp"
-#      - "1701:1701/tcp"
-#      - "5555:5555/tcp"
-#      - "992:992/tcp"
-#
-#    cap_add:
-#      - NET_ADMIN
-#
-#    volumes:
-#      # Don't store any logs
-#      - /dev/null:/usr/vpnserver/server_log
-#      - /dev/null:/usr/vpnserver/packet_log
-#      - /dev/null:/usr/vpnserver/security_log
-
   plausible_db:
     image: postgres:14-alpine
     hostname: plausible_db
@@ -357,25 +326,6 @@ services:
     volumes:
       - ./config/updater.yaml:/etc/updater.yml
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
-
-  wg-easy:
-    image: ghcr.io/wg-easy/wg-easy:8
-    network_mode: "bridge"
-    container_name: wg-easy
-    ports:
-      - "51820:51820/udp"
-      - "51821:51821"
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv4.ip_forward=1
-    volumes:
-      - ./private/wgeasy:/etc/wireguard
-    # WG_HOST, PASSWORD variable
-    env_file: private/environment/wgeasy.env
-    restart: always
 
 volumes:
   db-data:
