@@ -15,28 +15,7 @@ services:
     volumes:
       # this is needed in order to monitor docker
       # to make it work you need to create user "zabbix" with id 1997 on the host system,
-      # and make sure it has enough permissions to read /var/run/docker.sock, for that run in the terminal:
-      #  echo "creating zabbix user and group"
-      #  groupadd -g 1997 zabbix
-      #  useradd -u 1997 -g zabbix -G docker zabbix
-      #  echo "creating a service 'set-zabbix-docker-acl' which will allow zabbix to read and write docker socket"
-      #  cat <<EOF >/etc/systemd/system/set-zabbix-docker-acl.service
-      #  [Unit]
-      #  Description=Zabbix docker ACL Hack
-      #  Requires=local-fs.target
-      #  After=local-fs.target
-      #
-      #  [Service]
-      #  ExecStart=/usr/bin/setfacl -m u:zabbix:rw /var/run/docker.sock
-      #
-      #  [Install]
-      #  WantedBy=multi-user.target
-      #  EOF
-      #  # acl provides setfacl package
-      #  apt-get -y install acl >/dev/null
-      #  # enable the service on startup and start it
-      #  systemctl enable set-zabbix-docker-acl >/dev/null
-      #  systemctl start set-zabbix-docker-acl
+      # and make sure it has enough permissions to read /var/run/docker.sock, for that run scripts/create-zabbix-user.sh
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
