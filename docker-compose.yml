@@ -358,10 +358,10 @@ services:
       - ./config/updater.yaml:/etc/updater.yml
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
 
-  wgeasy:
+  wg-easy:
     image: ghcr.io/wg-easy/wg-easy:8
     network_mode: "bridge"
-    container_name: wgeasy
+    container_name: wg-easy
     ports:
       - "51820:51820/udp"
       - "51821:51821"
