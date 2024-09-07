@@ -19,3 +19,7 @@ sudo firewall-cmd --reload
 ### VPN Servers
 
 Example of VPN servers setup is in the separate file, `docker-compose-vpn.yml`.
+
+### Zabbix Agent
+
+Zabbix Agent setup in
