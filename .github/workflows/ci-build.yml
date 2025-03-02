@@ -32,7 +32,7 @@ jobs:
           docker buildx build \
               --platform linux/amd64 .
 
-      - name: build Zabbix server image for ghcr.io and DockerHub
+      - name: build Zabbix server image for ghcr.io
         working-directory: config/zabbix
         if: ${{ github.ref == 'refs/heads/master' }}
         env:
