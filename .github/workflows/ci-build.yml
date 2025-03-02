@@ -42,7 +42,7 @@ jobs:
           echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
           docker buildx build --push \
               --platform linux/amd64,linux/arm64 \
-              -t ghcr.io/paskal/zabbix-server-mysql:latest -t paskal/zabbix-server-mysql:latest .
+              -t ghcr.io/paskal/zabbix-server-mysql:latest .
 
       - name: remote deployment to zabbix.terrty.net from master
         if: ${{ github.ref == 'refs/heads/master' }}
