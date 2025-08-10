@@ -331,7 +331,7 @@ services:
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
 
   newscope:
-    image: umputun/newscope:latest
+    image: ghcr.io/umputun/newscope:master
     container_name: newscope
     hostname: newscope
     restart: always
