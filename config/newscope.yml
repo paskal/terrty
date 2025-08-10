@@ -1,0 +1,33 @@
+server:
+  listen: ":8080"
+  base_url: "https://newscope.terrty.net"
+
+database:
+  dsn: "./var/newscope.db"
+
+schedule:
+  update_interval: 1m
+  max_workers: 20
+  cleanup_age: 168h
+  cleanup_min_score: 5.0
+  cleanup_interval: 24h
+  retry_attempts: 5
+  retry_initial_delay: 100ms
+  retry_max_delay: 5s
+  retry_jitter: 0.3
+
+llm:
+  endpoint: "https://api.openai.com/v1"
+  api_key: "${OPENAI_API_KEY}"
+  model: "gpt-5-mini"
+  temperature: 0.3
+  classification:
+    feedback_examples: 50
+    preference_summary_threshold: 10
+    batch_size: 10
+    batch_timeout: 5s
+    summary_retry_attempts: 3
+
+extraction:
+  enabled: true
+  timeout: "30s"

@@ -52,6 +52,8 @@ services:
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       # certificate folder from le-dns-updater
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
+      # htpasswd files for basic auth
+      - ./private/nginx-htpasswd:/etc/nginx/htpasswd:ro
 
     ports:
       - "80:80"
@@ -327,6 +329,27 @@ services:
     volumes:
       - ./config/updater.yaml:/etc/updater.yml
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
+
+  newscope:
+    image: umputun/newscope:latest
+    container_name: newscope
+    hostname: newscope
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    # OPENAI_API_KEY variable
+    env_file: private/environment/newscope.env
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./config/newscope.yml:/srv/config.yml:ro
+      - ./private/newscope-data:/srv/var
+    expose:
+      - "8080"
+    command: ["--config=/srv/config.yml"]
 
 volumes:
   db-data:
