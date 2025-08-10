@@ -6,9 +6,9 @@ database:
   dsn: "./var/newscope.db"
 
 schedule:
-  update_interval: 1m
+  update_interval: 30m
   max_workers: 20
-  cleanup_age: 168h
+  cleanup_age: 336h
   cleanup_min_score: 5.0
   cleanup_interval: 24h
   retry_attempts: 5
@@ -21,11 +21,13 @@ llm:
   api_key: "${OPENAI_API_KEY}"
   model: "gpt-5-mini"
   temperature: 0.3
+  max_tokens: 10000
   classification:
     feedback_examples: 50
+    use_json_mode: true
     preference_summary_threshold: 10
     batch_size: 10
-    batch_timeout: 5s
+    batch_timeout: 10s
     summary_retry_attempts: 3
 
 extraction:
