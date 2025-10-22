@@ -143,6 +143,8 @@ services:
     volumes:
       # MySQL socket to prevent transferring data through TCP
       - ./private/mysqld:/var/run/mysqld
+    labels:
+      - "telegram-notifier.monitor=true"
 
   zabbix-server:
     build: config/zabbix
@@ -169,6 +171,8 @@ services:
       - ZBX_TIMEOUT=30
     ports:
       - "10051:10051"
+    labels:
+      - "telegram-notifier.monitor=true"
 
   # In order for data collection from Zabbix Server to work,
   # you'll need to go to host settings in Zabbix and change Agent
@@ -349,6 +353,24 @@ services:
     expose:
       - "8080"
     command: ["--config=/srv/config.yml"]
+
+  telegram-notifier:
+    image: lorcas/docker-telegram-notifier:latest
+    container_name: telegram-notifier
+    hostname: telegram-notifier
+    restart: always
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # TELEGRAM_NOTIFIER_BOT_TOKEN, TELEGRAM_NOTIFIER_CHAT_ID
+    env_file: private/environment/telegram-notifier.env
+    environment:
+      - TZ=UTC
+      - ONLY_WHITELIST=true
 
 volumes:
   db-data:

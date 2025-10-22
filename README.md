@@ -20,6 +20,32 @@ sudo firewall-cmd --reload
 
 Example of VPN servers setup is in the separate file, `docker-compose-vpn.yml`.
 
+### Container Monitoring with Telegram Alerts
+
+The `telegram-notifier` service monitors Docker containers and sends Telegram alerts when they stop, restart, or become unhealthy. Currently configured to monitor `zabbix-server` and `zabbix-web` containers.
+
+**Setup:**
+
+1. Create a Telegram bot:
+   - Message [@BotFather](https://t.me/BotFather) on Telegram
+   - Send `/newbot` and follow the instructions
+   - Copy the bot token
+
+2. Get your chat ID:
+   - Message [@userinfobot](https://t.me/userinfobot) on Telegram
+   - Copy your chat ID
+
+3. Update `private/environment/telegram-notifier.env`:
+   - Set `TELEGRAM_NOTIFIER_BOT_TOKEN` to your bot token
+   - Set `TELEGRAM_NOTIFIER_CHAT_ID` to your chat ID
+
+4. Start the monitoring service:
+   ```shell
+   docker-compose up -d telegram-notifier
+   ```
+
+**To monitor additional containers:** Add the label `telegram-notifier.monitor: true` to any service in `docker-compose.yml`.
+
 ### Zabbix Agent
 
 Zabbix Agent setup in
