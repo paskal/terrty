@@ -10,7 +10,7 @@ tasks:
   - name: terrty-cv
     command: |
       echo "update terrty.net/cv/"
-      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/resume && git pull --ff-only && docker compose run --rm build && docker compose run --rm build-pdf || [ -f cv/paskal-cv.pdf ]"
+      eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/resume && git pull --ff-only && docker compose run --rm build"
   - name: publish-blog
     command: |
       echo "update terrty.net (blog)"
