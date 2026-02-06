@@ -15,6 +15,10 @@ tasks:
     command: |
       echo "update terrty.net (blog)"
       eval "$(ssh-agent -s)" && ssh-add -k && ssh -A opc@terrty.net "cd /home/opc/blog && git pull --ff-only && docker compose run build"
+  - name: lhci
+    command: |
+      echo "update LHCI server after image rebuild"
+      ssh opc@terrty.net "cd /home/opc/terrty && docker compose pull lhci && docker compose up -d lhci"
   - name: pull-code
     command: |
       echo "update code used for terrty.net"

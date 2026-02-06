@@ -49,3 +49,28 @@ jobs:
         env:
           UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
         run: curl https://hooks.terrty.net/update/zabbix/${UPDATER_KEY}
+
+      - name: build LHCI server image without pushing (only outside master)
+        working-directory: config/lhci
+        if: ${{ github.ref != 'refs/heads/master' }}
+        run: |
+          docker buildx build \
+              --platform linux/amd64 .
+
+      - name: build LHCI server image for ghcr.io
+        working-directory: config/lhci
+        if: ${{ github.ref == 'refs/heads/master' }}
+        env:
+          GITHUB_PACKAGE_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.actor }}
+        run: |
+          echo ${GITHUB_PACKAGE_TOKEN} | docker login ghcr.io -u ${USERNAME} --password-stdin
+          docker buildx build --push \
+              --platform linux/amd64,linux/arm64 \
+              -t ghcr.io/paskal/lhci-server:latest .
+
+      - name: remote deployment to lhci.terrty.net from master
+        if: ${{ github.ref == 'refs/heads/master' }}
+        env:
+          UPDATER_KEY: ${{ secrets.UPDATER_KEY }}
+        run: curl https://hooks.terrty.net/update/lhci/${UPDATER_KEY}

@@ -33,6 +33,7 @@ services:
       - plausible
       - adminer
       - updater
+      - lhci
 
     logging:
       driver: json-file
@@ -356,6 +357,33 @@ services:
     expose:
       - "8080"
     command: ["--config=/srv/config.yml"]
+
+  lhci:
+    build: config/lhci
+    image: ghcr.io/paskal/lhci-server:latest
+    container_name: lhci
+    hostname: lhci
+    restart: always
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+    expose:
+      - "9001"
+
+    env_file: private/environment/lhci.env
+
+    environment:
+      - TZ=UTC
+
+    volumes:
+      - ./private/lhci-data:/data
+
+    labels:
+      - "telegram-notifier.monitor=true"
 
   telegram-notifier:
     image: lorcas/docker-telegram-notifier:latest
