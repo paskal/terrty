@@ -185,7 +185,7 @@ services:
     restart: always
 
   plausible_db:
-    image: postgres:14-alpine
+    image: postgres:16-alpine
     hostname: plausible_db
     container_name: plausible_db
     restart: always
