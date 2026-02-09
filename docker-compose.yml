@@ -49,6 +49,7 @@ services:
       - ./config/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
       - ./config/nginx/static.conf:/etc/nginx/static.conf
+      - ./config/nginx/security-headers.conf:/etc/nginx/security-headers.conf
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       # certificate folder from le-dns-updater
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
