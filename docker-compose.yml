@@ -66,6 +66,9 @@ services:
     hostname: "remark42"
     restart: always
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:8080/api/v1/ping"]
+      start_period: 30s
 
     expose:
       - "8080"
@@ -158,6 +161,9 @@ services:
       - --collation-server=utf8mb4_bin
       - --skip-mysqlx
     logging: *default-logging
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      start_period: 1m
 
     # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
     env_file: private/environment/mysql.env
@@ -188,6 +194,9 @@ services:
       - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      start_period: 1m
 
   plausible_events_db:
     image: clickhouse/clickhouse-server:24.12-alpine
@@ -208,22 +217,33 @@ services:
         hard: 262144
     environment:
       - CLICKHOUSE_SKIP_USER_SETUP=1
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 -O - http://127.0.0.1:8123/ping || exit 1"]
+      start_period: 1m
 
   plausible:
     image: ghcr.io/plausible/community-edition:v3.2.0
     hostname: plausible
     container_name: plausible
-    command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
+    command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     restart: always
     logging: *default-logging
     depends_on:
-      - plausible_db
-      - plausible_events_db
+      plausible_db:
+        condition: service_healthy
+      plausible_events_db:
+        condition: service_healthy
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
     expose:
       - "8000"
     environment:
       - BASE_URL=https://stats.terrty.net
+      - TMPDIR=/var/lib/plausible/tmp
     volumes:
+      - plausible-data:/var/lib/plausible
       # robots.txt restricting indexing anything on the stats website
       - ./config/plausible-robots.txt:/app/lib/plausible-0.0.1/priv/static/robots.txt:ro
     # SECRET_KEY_BASE, TOTP_VAULT_KEY, many other variables
@@ -319,4 +339,6 @@ volumes:
   event-data:
     driver: local
   event-logs:
+    driver: local
+  plausible-data:
     driver: local
