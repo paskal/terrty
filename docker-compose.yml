@@ -28,7 +28,6 @@ services:
     restart: always
     container_name: nginx
     depends_on:
-      - grafana
       - zabbix-web
       - plausible
       - adminer
@@ -87,33 +86,6 @@ services:
       - SITE=terrty
     volumes:
       - ./private/remark42-data:/srv/var
-
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    hostname: grafana
-    restart: always
-    volumes:
-      - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
-      # Data persistence
-      # to make it work run chown 472:472 -R ./private/grafana-data
-      - ./private/grafana-data:/var/lib/grafana
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-
-    expose:
-      - "3000"
-    # uncomment for local tests
-    # ports:
-    #     - 3000:3000
-    environment:
-      - TZ=UTC
-      - GF_INSTALL_PLUGINS=alexanderzobnin-zabbix-app
-      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=alexanderzobnin-zabbix-datasource
 
   zabbix-web:
     image: zabbix/zabbix-web-nginx-mysql:latest
