@@ -262,9 +262,11 @@ services:
         max-file: "5"
     volumes:
       - event-data:/var/lib/clickhouse
-      - ./config/clickhouse/server-logging.xml:/etc/clickhouse-server/config.d/logging.xml:ro
-      - ./config/clickhouse/user-logging.xml:/etc/clickhouse-server/users.d/logging.xml:ro
-      - ./config/clickhouse/listen.xml:/etc/clickhouse-server/config.d/listen.xml:ro
+      - event-logs:/var/log/clickhouse-server
+      - ./config/clickhouse/logs.xml:/etc/clickhouse-server/config.d/logs.xml:ro
+      - ./config/clickhouse/ipv4-only.xml:/etc/clickhouse-server/config.d/ipv4-only.xml:ro
+      - ./config/clickhouse/low-resources.xml:/etc/clickhouse-server/config.d/low-resources.xml:ro
+      - ./config/clickhouse/default-profile-low-resources-overrides.xml:/etc/clickhouse-server/users.d/default-profile-low-resources-overrides.xml:ro
     ulimits:
       nofile:
         soft: 262144
@@ -273,7 +275,7 @@ services:
       - CLICKHOUSE_SKIP_USER_SETUP=1
 
   plausible:
-    image: ghcr.io/plausible/community-edition:v3.1.0
+    image: ghcr.io/plausible/community-edition:v3.2.0
     hostname: plausible
     container_name: plausible
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
@@ -407,4 +409,6 @@ volumes:
   db-data:
     driver: local
   event-data:
+    driver: local
+  event-logs:
     driver: local
