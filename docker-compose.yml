@@ -1,15 +1,16 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   le-dns-updater:
     image: ghcr.io/umputun/le-dns-updater:master
     container_name: le-dns-updater
     hostname: le-dns-updater
     restart: always
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     volumes:
       - ./private/le-dns-updater:/srv/var
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -33,12 +34,7 @@ services:
       - adminer
       - updater
       - lhci
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     volumes:
       # terrty.net blog source code
@@ -69,12 +65,7 @@ services:
     container_name: "remark42"
     hostname: "remark42"
     restart: always
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     expose:
       - "8080"
@@ -95,12 +86,7 @@ services:
     restart: always
     depends_on:
       - zabbix-server
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
     env_file: private/environment/mysql.env
@@ -126,12 +112,7 @@ services:
     container_name: zabbix-server
     hostname: zabbix-server
     restart: always
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
     env_file: private/environment/mysql.env
@@ -157,12 +138,7 @@ services:
     restart: always
     privileged: true
     user: root
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     volumes:
       # this is needed in order to monitor docker
@@ -180,14 +156,8 @@ services:
       - mysqld
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_bin
-      - --innodb-monitor-enable=all
       - --skip-mysqlx
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
     env_file: private/environment/mysql.env
@@ -213,11 +183,7 @@ services:
     hostname: plausible_db
     container_name: plausible_db
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -228,11 +194,7 @@ services:
     hostname: plausible_events_db
     container_name: plausible_events_db
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     volumes:
       - event-data:/var/lib/clickhouse
       - event-logs:/var/log/clickhouse-server
@@ -253,11 +215,7 @@ services:
     container_name: plausible
     command: sh -c "sleep 10 && /entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     depends_on:
       - plausible_db
       - plausible_events_db
@@ -282,13 +240,7 @@ services:
     volumes:
       # MySQL socket to prevent transferring data through TCP
       - ./private/mysqld:/var/run/mysqld
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-
+    logging: *default-logging
     restart: unless-stopped
 
   updater:
@@ -296,11 +248,7 @@ services:
     container_name: updater
     hostname: updater
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     # KEY variable
     env_file: private/environment/updater.env
     environment:
@@ -317,11 +265,7 @@ services:
     container_name: newscope
     hostname: newscope
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     # OPENAI_API_KEY variable
     env_file: private/environment/newscope.env
     environment:
@@ -339,12 +283,7 @@ services:
     container_name: lhci
     hostname: lhci
     restart: always
-
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
 
     expose:
       - "9001"
@@ -365,11 +304,7 @@ services:
     container_name: telegram-notifier
     hostname: telegram-notifier
     restart: always
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
+    logging: *default-logging
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     # TELEGRAM_NOTIFIER_BOT_TOKEN, TELEGRAM_NOTIFIER_CHAT_ID
