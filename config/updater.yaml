@@ -19,6 +19,9 @@ tasks:
     command: |
       echo "update LHCI server after image rebuild"
       ssh opc@terrty.net "cd /home/opc/terrty && docker compose pull lhci && docker compose up -d lhci"
+  - name: er
+    command: |
+      ssh opc@terrty.net "cd /home/opc/terrty && docker compose -f docker-compose-er.yml pull && docker compose -f docker-compose-er.yml up -d"
   - name: pull-code
     command: |
       echo "update code used for terrty.net"
