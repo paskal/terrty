@@ -222,7 +222,7 @@ services:
       start_period: 1m
 
   plausible:
-    image: ghcr.io/plausible/community-edition:v3.2.0
+    image: ghcr.io/plausible/community-edition:v3.2.1
     hostname: plausible
     container_name: plausible
     command: sh -c "/entrypoint.sh db createdb && /entrypoint.sh db migrate && /entrypoint.sh run"
