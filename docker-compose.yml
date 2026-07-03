@@ -153,7 +153,7 @@ services:
       - ZBX_SERVER_HOST=zabbix-server
 
   mysql:
-    image: jamielsharief/mysql:latest
+    image: mysql:8.4
     container_name: mysql
     command:
       - mysqld
@@ -165,7 +165,10 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       start_period: 1m
 
-    # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER
+    # MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_USER, MYSQL_ROOT_PASSWORD
+    # MYSQL_ROOT_PASSWORD is required by the official image to initialise an
+    # empty data directory (fresh deploy or restore); it is ignored once
+    # ./private/mysql-data is populated.
     env_file: private/environment/mysql.env
     environment:
       - TZ=UTC
