@@ -15,11 +15,11 @@
   unset). Under PHP 8 an empty string is invalid for `mysqli::real_connect()`'s `?int $port`
   argument, so an unset port throws a fatal `TypeError` and every frontend page returns HTTP 500.
   Setting a numeric port sidesteps it; the value is ignored because the connection uses the socket.
-  This is applied on the server via an untracked `docker-compose.override.yml`, so do not delete
-  that file.
+  This is set on `zabbix-web` in the tracked `docker-compose.yml`, so it survives a fresh checkout
+  or server rebuild (an earlier untracked `docker-compose.override.yml` is now redundant).
   - Fixed upstream in zabbix-docker `cc028ed` (2026-07-01, branches `master` + `7.4`), which
     replaces `env_string` with an `env_int` helper.
   - **Waiting for a fixed published image:** as of 2026-07-05 no stable image contains the fix.
     The newest stable `zabbix/zabbix-web-nginx-mysql` tags (`latest`, `7.4.11`) predate it
     (2026-06-21 and 2026-06-03); only the `trunk-*` nightlies carry it. Once a stable `7.4.x`
-    image published after 2026-07-01 appears, drop `DB_SERVER_PORT` and this override.
+    image published after 2026-07-01 appears, drop the `DB_SERVER_PORT` env var.
