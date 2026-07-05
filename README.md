@@ -2,7 +2,7 @@
 
 Source code for different (mostly, monitoring) services running on <https://terrty.net> which is primarily my blog.
 
-Contains Zabbix Server [![Image Size](https://img.shields.io/docker/image-size/paskal/zabbix-server-mysql)](https://hub.docker.com/r/paskal/zabbix-server-mysql), Plausible, Remark42, Adminer, Grafana, Nginx for https://terrty.net and https://ksinia.net, and databases (MySQL, PostgreSQL ClickHouse, GeoIP) for these.
+Contains Zabbix Server [![Image Size](https://img.shields.io/docker/image-size/paskal/zabbix-server-mysql)](https://hub.docker.com/r/paskal/zabbix-server-mysql), Plausible, Remark42, Adminer, Newscope, Lighthouse CI, and Nginx serving https://terrty.net and https://ksinia.net, together with their databases (MySQL, PostgreSQL, ClickHouse).
 
 For IPv6 work on Oracle Linux inside Oracle Cloud run:
 
@@ -22,7 +22,7 @@ Example of VPN servers setup is in the separate file, `docker-compose-vpn.yml`.
 
 ### Container Monitoring with Telegram Alerts
 
-The `telegram-notifier` service monitors Docker containers and sends Telegram alerts when they stop, restart, or become unhealthy. Currently configured to monitor `zabbix-server` and `zabbix-web` containers.
+The `telegram-notifier` service monitors Docker containers and sends Telegram alerts when they stop, restart, or become unhealthy. Currently configured to monitor `zabbix-server`, `zabbix-web`, and `lhci` containers.
 
 **Setup:**
 
@@ -41,11 +41,11 @@ The `telegram-notifier` service monitors Docker containers and sends Telegram al
 
 4. Start the monitoring service:
    ```shell
-   docker-compose up -d telegram-notifier
+   docker compose up -d telegram-notifier
    ```
 
 **To monitor additional containers:** Add the label `telegram-notifier.monitor: true` to any service in `docker-compose.yml`.
 
 ### Zabbix Agent
 
-Zabbix Agent setup in
+Zabbix Agent setup for monitored hosts is in the separate file, `docker-compose-zabbix-agent.yml`.
