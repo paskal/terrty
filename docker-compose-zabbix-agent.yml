@@ -3,6 +3,8 @@ services:
     image: zabbix/zabbix-agent2:latest
     container_name: zabbix-agent
     restart: always
+    # privileged + root grants the capabilities and host-device access that some
+    # monitoring checks need beyond a normal container
     privileged: true
     user: root
 
@@ -13,9 +15,9 @@ services:
         max-file: "5"
 
     volumes:
-      # this is needed in order to monitor docker
-      # to make it work you need to create user "zabbix" with id 1997 on the host system,
-      # and make sure it has enough permissions to read /var/run/docker.sock, for that run scripts/create-zabbix-user.sh
+      # docker.sock lets the agent monitor containers. Running privileged as root
+      # (above) already grants access; for a non-privileged agent instead, create
+      # host user "zabbix" (uid 1997) with a socket ACL via scripts/create-zabbix-user.sh
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
