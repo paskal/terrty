@@ -139,12 +139,15 @@ services:
     image: zabbix/zabbix-agent2:latest
     container_name: zabbix-agent
     restart: always
+    # privileged + root grants the capabilities and host-device access that some
+    # monitoring checks need beyond a normal container
     privileged: true
     user: root
     logging: *default-logging
 
     volumes:
-      # this is needed in order to monitor docker
+      # docker.sock lets the agent monitor containers; running privileged as
+      # root above already grants access to it
       - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
