@@ -163,6 +163,10 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_bin
       - --skip-mysqlx
+      # Nothing replicates from this instance, so binary logs only ever served
+      # point-in-time recovery. At the MySQL 8.4 default of 30 days they reached
+      # 6.2 GB across 8 files and filled the root filesystem to 96% (2026-07-29).
+      - --binlog_expire_logs_seconds=172800
     logging: *default-logging
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
