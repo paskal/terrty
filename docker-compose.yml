@@ -252,6 +252,10 @@ services:
     environment:
       - BASE_URL=https://stats.terrty.net
       - TMPDIR=/var/lib/plausible/tmp
+      # An empty host passthrough removes stale values from the env file and
+      # keeps Plausible on its bundled DB-IP country database.
+      - MAXMIND_EDITION
+      - MAXMIND_LICENSE_KEY
     volumes:
       - plausible-data:/var/lib/plausible
       # robots.txt restricting indexing anything on the stats website
