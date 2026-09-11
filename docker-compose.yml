@@ -34,6 +34,8 @@ services:
       - adminer
       - updater
       - lhci
+      - remark42
+      - newscope
     logging: *default-logging
 
     volumes:
