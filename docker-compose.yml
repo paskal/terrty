@@ -169,6 +169,11 @@ services:
       # point-in-time recovery. At the MySQL 8.4 default of 30 days they reached
       # 6.2 GB across 8 files and filled the root filesystem to 96% (2026-07-29).
       - --binlog_expire_logs_seconds=172800
+      # Expiry is only evaluated on rotation and at startup. At the 1 GB default
+      # this instance rotated about every three days, so a 1.1 GB log from three
+      # days earlier was still on disk (2026-09-19). 128 MB rotates roughly every
+      # eight hours and keeps the total near 600 MB.
+      - --max_binlog_size=134217728
     logging: *default-logging
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
