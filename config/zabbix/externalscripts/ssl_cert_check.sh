@@ -12,8 +12,10 @@ function show_help() {
 		cat >&2 <<EOF
 
 Usage: $(basename "$0") expire|valid hostname|ip [port[/starttls protocol]] [domain for TLS SNI] [check_timeout]
+       $(basename "$0") domain domain-name [ignored] [ignored] [check_timeout]
 
-Script checks SSL certificate expiration and validity for HTTPS.
+Script checks SSL certificate expiration and validity for HTTPS, and the registration
+expiry of a domain through whois.
 
 [port] is optional, default is 443
 
@@ -35,6 +37,11 @@ Output:
   * 1	valid
   * 0	invalid
   * $error_code	failed to get certificate or incorrect parameters
+
+* domain:
+
+  * N	number of days left before the domain registration expires, 0 or negative if expired
+  * $error_code	whois gave no answer or no expiry date
 
 Return code is always 0, otherwise zabbix agent fails to get item value and triggers would not work. Note: error messages are not printed when running not on a terninal, so that script result from zabbix is always a correct integer.
 EOF
@@ -85,13 +92,27 @@ fi
 
 # Check arguments
 [ "$#" -lt 2 ] && show_help && exit 0
-[ "$check_type" = "expire" ] || [ "$check_type" = "valid" ] || error "Wrong check type. Should be one of: expire,valid"
+[ "$check_type" = "expire" ] || [ "$check_type" = "valid" ] || [ "$check_type" = "domain" ] || error "Wrong check type. Should be one of: expire,valid,domain"
 [[ "$port" =~ ^[0-9]+$ ]] || error "Port should be a number"
 { [ "$port" -ge 1 ] && [ "$port" -le 65535 ]; } || error "Port should be between 1 and 65535"
 if [ ! -z "$starttls_proto" ]; then
 	[[ "$starttls_proto" =~ ^[a-z0-9]+$ ]] || error "Starttls protocol should be an identifier"
 fi
 [[ "$check_timeout" =~ ^[0-9]+$ ]] || error "Check timeout should be a number"
+
+# Domain registration expiry from whois. The field name differs per registry: paid-till for
+# .ru and .рф, Registry Expiry Date for gTLDs such as .com and .net.
+if [ "$check_type" = "domain" ]; then
+	type whois >/dev/null 2>&1 || error "Not found in \$PATH: whois"
+	whois_output=$(timeout "$check_timeout" whois "$host" 2>/dev/null) || error "whois failed"
+	expire_date=$(echo "$whois_output" |
+		grep -i -m1 -E '^[[:space:]]*(paid-till|registry expiry date|registrar registration expiration date|expiration date|expiry date):' |
+		sed -E 's/^[^:]*:[[:space:]]*//')
+	[ -n "$expire_date" ] || error "No expiry date in the whois answer"
+	expire_date_epoch=$(date -d "$expire_date" +%s 2>/dev/null) || error "Failed to parse expiry date: $expire_date"
+	current_date_epoch=$(date +%s)
+	result $(((expire_date_epoch - current_date_epoch) / (3600 * 24)))
+fi
 
 # Get certificate
 if ! output=$(echo |
