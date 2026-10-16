@@ -46,6 +46,14 @@ The `telegram-notifier` service monitors Docker containers and sends Telegram al
 
 **To monitor additional containers:** Add the label `telegram-notifier.monitor: true` to any service in `docker-compose.yml`.
 
+### Docker disk cleanup
+
+`config/cron/docker-prune.cron` removes dangling images and week-old build cache every night. Install it after cloning, and again after editing it:
+
+```shell
+sudo install -o root -g root -m 0644 config/cron/docker-prune.cron /etc/cron.d/docker-prune
+```
+
 ### Zabbix Agent
 
 Zabbix Agent setup for monitored hosts is in the separate file, `docker-compose-zabbix-agent.yml`.

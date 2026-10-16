@@ -1,0 +1,6 @@
+# Daily removal of dangling images and week-old build cache. Image pulls by the updater and the
+# local rebuilds leave both behind; on 16.10.2026 they had filled the root disk to 99 %, which
+# also holds the Zabbix database. Installed as a root-owned copy (cronie skips files in
+# /etc/cron.d that root does not own):
+#   sudo install -o root -g root -m 0644 config/cron/docker-prune.cron /etc/cron.d/docker-prune
+10 4 * * * opc docker image prune -f >/dev/null 2>&1; docker builder prune -f --filter until=168h >/dev/null 2>&1
