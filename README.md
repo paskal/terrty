@@ -10,15 +10,10 @@ For IPv6 work on Oracle Linux inside Oracle Cloud run:
 sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
 sudo firewall-cmd --zone=public --add-port=443/udp --permanent
-sudo firewall-cmd --zone=public --add-port=10051/tcp --permanent
-sudo firewall-cmd --zone=public --add-port=51820/udp --permanent
-sudo firewall-cmd --zone=public --add-port=51821/tcp --permanent
 sudo firewall-cmd --reload
 ```
 
-### VPN Servers
-
-Example of VPN servers setup is in the separate file, `docker-compose-vpn.yml`.
+The Zabbix server port 10051 stays out of the public zone: Docker publishes it past firewalld, so agent addresses are allow-listed in the `DOCKER-USER` chain with firewalld direct rules (`sudo firewall-cmd --permanent --direct --get-all-rules`).
 
 ### Container Monitoring with Telegram Alerts
 
