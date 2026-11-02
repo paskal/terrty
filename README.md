@@ -2,7 +2,7 @@
 
 Source code for different (mostly, monitoring) services running on <https://terrty.net> which is primarily my blog.
 
-Contains Zabbix Server [![Image Size](https://img.shields.io/docker/image-size/paskal/zabbix-server-mysql)](https://hub.docker.com/r/paskal/zabbix-server-mysql), Plausible, Remark42, Adminer, Newscope, Lighthouse CI, and Nginx serving https://terrty.net and https://ksinia.net, together with their databases (MySQL, PostgreSQL, ClickHouse).
+Contains Zabbix Server [![Image Size](https://img.shields.io/docker/image-size/paskal/zabbix-server-mysql)](https://hub.docker.com/r/paskal/zabbix-server-mysql), Plausible, Remark42, Adminer, Newscope, Lighthouse CI, a small answers store for private pages, and Nginx serving https://terrty.net and https://ksinia.net, together with their databases (MySQL, PostgreSQL, ClickHouse).
 
 For IPv6 work on Oracle Linux inside Oracle Cloud run:
 
@@ -48,6 +48,19 @@ The `telegram-notifier` service monitors Docker containers and sends Telegram al
 ```shell
 sudo install -o root -g root -m 0644 config/cron/docker-prune.cron /etc/cron.d/docker-prune
 ```
+
+### Answers on private pages
+
+`rodnya-api` (`config/rodnya-api`) stores what visitors select and write on the private static pages under `/rodnya/<16 hex>/`; nginx sends `/rodnya/<page>/api/` to it. It accepts a page only if `private/rodnya/<page>/index.html` exists, keeps one append-only log per page in `private/rodnya-data/<page>.jsonl`, and shows all answers at `/rodnya/<page>/api/admin/<ADMIN_KEY>/` with `export.json` and `log.jsonl` downloads there. Setup after cloning:
+
+```shell
+openssl rand -hex 16 | sed 's/^/ADMIN_KEY=/' > private/environment/rodnya-api.env
+mkdir -p private/rodnya-data
+docker run --rm -v "$PWD/private/rodnya-data:/d" alpine chown 65534:65534 /d
+docker compose up -d --build rodnya-api
+```
+
+The image is built on the server, so rerun the last command after changing its code.
 
 ### Zabbix Agent
 

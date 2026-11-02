@@ -36,6 +36,7 @@ services:
       - lhci
       - remark42
       - newscope
+      - rodnya-api
     logging: *default-logging
 
     volumes:
@@ -53,6 +54,8 @@ services:
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
       # htpasswd files for basic auth
       - ./private/nginx-htpasswd:/etc/nginx/htpasswd:ro
+      # private family photo pages, local only, not in git
+      - ./private/rodnya:/usr/share/nginx/rodnya:ro
 
     ports:
       - "80:80"
@@ -339,6 +342,22 @@ services:
 
     labels:
       - "telegram-notifier.monitor=true"
+
+  rodnya-api:
+    build: config/rodnya-api
+    container_name: rodnya-api
+    hostname: rodnya-api
+    restart: always
+    logging: *default-logging
+    # ADMIN_KEY, 32 hex characters opening the answers summary
+    env_file: private/environment/rodnya-api.env
+    expose:
+      - "8080"
+    volumes:
+      # pages are read only to check that a page exists before storing anything for it
+      - ./private/rodnya:/srv/pages:ro
+      # one append-only log per page, owned by uid 65534 the image runs as
+      - ./private/rodnya-data:/srv/var
 
   telegram-notifier:
     image: lorcas/docker-telegram-notifier:latest
