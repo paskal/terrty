@@ -65,3 +65,25 @@ The image is built on the server, so rerun the last command after changing its c
 ### Zabbix Agent
 
 Zabbix Agent setup for monitored hosts is in the separate file, `docker-compose-zabbix-agent.yml`.
+
+The server accepts only PSK-encrypted connections, from agents and from `zabbix_sender` alike, and each host has its own key. To add a host:
+
+1. Allow-list its public address for port 10051 (see the firewall note above):
+   ```shell
+   for m in "" --permanent; do sudo firewall-cmd $m --direct --add-rule ipv4 filter DOCKER-USER 0 -i <public-interface> -p tcp --dport 10051 -s <host-ip> -j RETURN; done
+   ```
+2. On the monitored host, next to `docker-compose-zabbix-agent.yml`, create the key readable by root only:
+   ```shell
+   (umask 077; openssl rand -hex 32 > zabbix-agent.psk)
+   ```
+   An agent that runs as its own user (uid 1997) instead of root needs `chown 1997:1997 zabbix-agent.psk`.
+3. In Zabbix, create the host with `ZBX_HOSTNAME` as its name. On its Encryption tab set "Connections to host" to PSK, tick only PSK under "Connections from host", and enter `ZBX_TLSPSKIDENTITY` and the key. An identity can carry only one key across the whole server, so give every host its own.
+4. Start the agent: `docker compose -f docker-compose-zabbix-agent.yml up -d`. Within two minutes the host shows the agent as available, and the server log has no `connection of type "unencrypted" is not allowed` lines for it.
+
+`zabbix_sender` on such a host runs inside the agent container with the same key, so its values land on that host:
+
+```shell
+docker exec zabbix-agent sh -c 'exec zabbix_sender -z "$ZBX_SERVER_HOST" -s "$ZBX_HOSTNAME" --tls-connect psk --tls-psk-identity "$ZBX_TLSPSKIDENTITY" --tls-psk-file "$ZBX_TLSPSKFILE" "$@"' zabbix_sender -k <key> -o <value>
+```
+
+The agent on this server itself (host "Zabbix server") reads its key from `private/environment/zabbix-agent.psk`, created the same way; compose refuses to start the agent without it.

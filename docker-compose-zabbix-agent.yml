@@ -19,8 +19,20 @@ services:
       # (above) already grants access; for a non-privileged agent instead, create
       # host user "zabbix" (uid 1997) with a socket ACL via scripts/create-zabbix-user.sh
       - /var/run/docker.sock:/var/run/docker.sock
+      # pre-shared key, the same as on the host's Encryption tab in Zabbix
+      - type: bind
+        source: ./zabbix-agent.psk
+        target: /var/lib/zabbix/enc/agent.psk
+        read_only: true
+        bind:
+          create_host_path: false
 
     environment:
       - TZ=Europe/Amsterdam
       - ZBX_HOSTNAME=hostname.of.your.monitored.host
       - ZBX_SERVER_HOST=hostname.domain
+      # the server accepts only PSK-encrypted connections
+      - ZBX_TLSCONNECT=psk
+      - ZBX_TLSACCEPT=psk
+      - ZBX_TLSPSKIDENTITY=hostname.of.your.monitored.host-agent
+      - ZBX_TLSPSKFILE=/var/lib/zabbix/enc/agent.psk

@@ -154,11 +154,23 @@ services:
       # docker.sock lets the agent monitor containers; running privileged as
       # root above already grants access to it
       - /var/run/docker.sock:/var/run/docker.sock
+      # pre-shared key for host "Zabbix server": the server accepts only PSK, also from
+      # zabbix_sender run inside this container
+      - type: bind
+        source: ./private/environment/zabbix-agent.psk
+        target: /var/lib/zabbix/enc/agent.psk
+        read_only: true
+        bind:
+          create_host_path: false
 
     environment:
       - TZ=UTC
       - ZBX_HOSTNAME=Zabbix server
       - ZBX_SERVER_HOST=zabbix-server
+      - ZBX_TLSCONNECT=psk
+      - ZBX_TLSACCEPT=psk
+      - ZBX_TLSPSKIDENTITY=terrty-agent
+      - ZBX_TLSPSKFILE=/var/lib/zabbix/enc/agent.psk
 
   mysql:
     image: mysql:8.4
