@@ -354,6 +354,26 @@ services:
       - ./config/updater.yaml:/etc/updater.yml
       - ./private/updater_ssh_key:/home/app/.ssh/id_rsa
 
+  # endpoint of the outside Zabbix watchdog: its own key and only the message tasks in
+  # config/watchdog-hook.yaml, so the watchdog host cannot trigger the deploy tasks of updater
+  watchdog-hook:
+    image: ghcr.io/umputun/updater:master
+    container_name: watchdog-hook
+    hostname: watchdog-hook
+    restart: always
+    logging: *default-logging
+    # KEY for the hook URL; TELEGRAM_NOTIFIER_BOT_TOKEN and TELEGRAM_NOTIFIER_CHAT_ID of the notifier
+    env_file:
+      - private/environment/watchdog-hook.env
+      - private/environment/telegram-notifier.env
+    environment:
+      - LISTEN=0.0.0.0:8080
+      - CONF=/etc/updater.yml
+    expose:
+      - "8080"
+    volumes:
+      - ./config/watchdog-hook.yaml:/etc/updater.yml:ro
+
   newscope:
     image: ghcr.io/umputun/newscope:master
     container_name: newscope

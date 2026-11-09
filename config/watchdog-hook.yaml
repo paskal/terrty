@@ -1,0 +1,14 @@
+# Tasks of the watchdog-hook container, because Zabbix cannot report its own outage. An outside
+# watchdog calls them when zabbix.terrty.net stops answering for 10 minutes, when it answers
+# again, and, if this hook was down as well, once after both are back. Each task sends one
+# Telegram message through the container notifier's bot.
+tasks:
+  - name: watchdog-zabbix-down
+    command: |
+      curl -fsS -o /dev/null --max-time 20 "https://api.telegram.org/bot${TELEGRAM_NOTIFIER_BOT_TOKEN}/sendMessage" --data-urlencode "chat_id=${TELEGRAM_NOTIFIER_CHAT_ID}" --data-urlencode "text=🔴 zabbix.terrty.net has not answered the outside watchdog for over 10 minutes: no Zabbix alerts arrive until it is back. Check docker ps -a and docker logs zabbix-server on terrty."
+  - name: watchdog-zabbix-up
+    command: |
+      curl -fsS -o /dev/null --max-time 20 "https://api.telegram.org/bot${TELEGRAM_NOTIFIER_BOT_TOKEN}/sendMessage" --data-urlencode "chat_id=${TELEGRAM_NOTIFIER_CHAT_ID}" --data-urlencode "text=✅ zabbix.terrty.net answers the outside watchdog again."
+  - name: watchdog-zabbix-recovered
+    command: |
+      curl -fsS -o /dev/null --max-time 20 "https://api.telegram.org/bot${TELEGRAM_NOTIFIER_BOT_TOKEN}/sendMessage" --data-urlencode "chat_id=${TELEGRAM_NOTIFIER_CHAT_ID}" --data-urlencode "text=⚠️ zabbix.terrty.net was unreachable from the outside watchdog for over 10 minutes and answers again. This hook was down too, so the outage could not be reported while it lasted: Zabbix alerts from that time may be missing."
