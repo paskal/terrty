@@ -5,8 +5,10 @@ x-logging: &default-logging
     max-file: "5"
 
 services:
-  le-dns-updater:
-    image: ghcr.io/umputun/le-dns-updater:master
+  le-dns-updater: &le-dns-updater
+    # built from umputun/le-dns-updater#1 (ACME profiles, ARI, no new certificate on every restart) until it is merged
+    build: https://github.com/paskal/le-dns-updater.git#profiles-ari-daily
+    image: le-dns-updater:profiles-ari-daily
     container_name: le-dns-updater
     hostname: le-dns-updater
     restart: always
@@ -15,13 +17,48 @@ services:
       - ./private/le-dns-updater:/srv/var
       - /var/run/docker.sock:/var/run/docker.sock:ro
     # See https://github.com/go-acme/lego#dns-providers for details
-    # DO_AUTH_TOKEN
+    # GANDIV5_PERSONAL_ACCESS_TOKEN for Gandi LiveDNS, DO_AUTH_TOKEN for DigitalOcean
     env_file: private/environment/le-dns-updater.env
+    environment:
+      - LE_PROFILE=shortlived
+    # one certificate per site, so a certificate does not list the other sites' names;
+    # the certificate files are named after the first domain
     command:
       - paskal.07@gmail.com  # email
-      - digitalocean         # provider
-      - "terrty.net *.terrty.net terrty.com *.terrty.com terrty.dev *.terrty.dev paskal.dev *.paskal.dev pask.al *.pask.al ksinia.net *.ksinia.net ksinia.com *.ksinia.com ksinia.dev *.ksinia.dev" # domains
-      - "docker restart nginx"
+      - gandiv5              # provider
+      - "terrty.net *.terrty.net" # domains
+      - "docker exec nginx nginx -s reload"
+
+  le-dns-updater-ksinia:
+    <<: *le-dns-updater
+    container_name: le-dns-updater-ksinia
+    hostname: le-dns-updater-ksinia
+    command:
+      - paskal.07@gmail.com
+      - gandiv5
+      - "ksinia.net *.ksinia.net"
+      - "docker exec nginx nginx -s reload"
+
+  le-dns-updater-redirects:
+    <<: *le-dns-updater
+    container_name: le-dns-updater-redirects
+    hostname: le-dns-updater-redirects
+    command:
+      - paskal.07@gmail.com
+      - gandiv5
+      - "terrty.com *.terrty.com terrty.dev *.terrty.dev paskal.dev *.paskal.dev ksinia.com *.ksinia.com ksinia.dev *.ksinia.dev"
+      - "docker exec nginx nginx -s reload"
+
+  # pask.al DNS stays on DigitalOcean
+  le-dns-updater-pask-al:
+    <<: *le-dns-updater
+    container_name: le-dns-updater-pask-al
+    hostname: le-dns-updater-pask-al
+    command:
+      - paskal.07@gmail.com
+      - digitalocean
+      - "pask.al *.pask.al"
+      - "docker exec nginx nginx -s reload"
 
   nginx:
     image: nginx:1-alpine
@@ -49,6 +86,7 @@ services:
       - ./config/nginx/ssl.conf:/etc/nginx/ssl.conf
       - ./config/nginx/static.conf:/etc/nginx/static.conf
       - ./config/nginx/security-headers.conf:/etc/nginx/security-headers.conf
+      - ./config/nginx/tls:/etc/nginx/tls
       - ./config/nginx/conf.d:/etc/nginx/conf.d
       # certificate folder from le-dns-updater
       - ./private/le-dns-updater/certificates:/etc/nginx/le-dns-updater
