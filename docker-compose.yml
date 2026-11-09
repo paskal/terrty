@@ -390,9 +390,6 @@ services:
     volumes:
       - ./private/lhci-data:/data
 
-    labels:
-      - "telegram-notifier.monitor=true"
-
   rodnya-api:
     build: config/rodnya-api
     container_name: rodnya-api
@@ -421,6 +418,8 @@ services:
     env_file: private/environment/telegram-notifier.env
     environment:
       - TZ=UTC
+      # only containers labelled telegram-notifier.monitor=true: zabbix-server and zabbix-web,
+      # whose failure Zabbix cannot report itself; everything else is watched by Zabbix
       - ONLY_WHITELIST=true
 
 volumes:
