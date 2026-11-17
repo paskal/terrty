@@ -6,9 +6,7 @@ x-logging: &default-logging
 
 services:
   le-dns-updater: &le-dns-updater
-    # built from umputun/le-dns-updater#1 (ACME profiles, ARI, no new certificate on every restart) until it is merged
-    build: https://github.com/paskal/le-dns-updater.git#profiles-ari-daily
-    image: le-dns-updater:profiles-ari-daily
+    image: ghcr.io/umputun/le-dns-updater:latest
     container_name: le-dns-updater
     hostname: le-dns-updater
     restart: always
